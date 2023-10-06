@@ -28,6 +28,7 @@ namespace EcommerceAppTests.UITests
         private LoginPage _loginPage;
         private RegisterPage _registerPage;
         private ProductPage _productPage;
+        private SearchPage _searchPage;
         private UserDataAndOrderVerifier _verifier;
         private CartPage _cartPage;
         private CheckoutPage _checkoutPage;
@@ -48,6 +49,7 @@ namespace EcommerceAppTests.UITests
             _registerPage = new RegisterPage(_driver);
             _loginPage = new LoginPage(_driver);
             _productPage = new ProductPage(_driver);
+            _searchPage = new SearchPage(_driver);
             _verifier = new UserDataAndOrderVerifier(_driver);
             _cartPage = new CartPage(_driver);
             _checkoutPage = new CheckoutPage(_driver);
@@ -163,6 +165,55 @@ namespace EcommerceAppTests.UITests
             }
         }
 
+        [Test]
+        public void VerifyBasicSearchFunctionalityTest()
+        {
+            string searchText = "apple";
+
+            _driver.NavigateToBaseURL();
+            Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
+
+            _basePage.EnterSearchText(searchText);
+            _basePage.ClickSearchButton();
+            Assert.That(_basePage.PageLoaded(_searchPage.pageTitle), Is.True, "Search page did not load correctly.");
+
+            _productPage.VerifySearchResults(searchText);
+
+        }
+        
+        [Test]
+        public void VerifyAdvancedSearchFunctionalityTest()
+        {
+            string searchText = "cam";
+
+            _driver.NavigateToBaseURL();
+            Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
+
+            _basePage.EnterSearchText(searchText);
+            _basePage.GetAllSearchDropdownItems(searchText);
+            _basePage.ClickSearchButton();
+            Assert.That(_basePage.PageLoaded(_searchPage.pageTitle), Is.True, "Search page did not load correctly.");
+
+            _productPage.VerifySearchResults(searchText);
+            Assert.That(_searchPage.GetSearchKeywordAdvancedText(), Is.EqualTo(searchText), "Search text is not correct.");
+
+            _searchPage.ClickAdvancedSearchCheckbox();
+            _searchPage.SelectCategoryAdvancedSearchDropdown(ProductPageTitle.Electronics);
+            _searchPage.ClickSearchSubcategoriesCheckbox();
+            //_searchPage.SelectManufacturerAdvancedSearchDropdown(ManufacturerList.Apple);
+            _searchPage.ClickSearchButtonAdvanced();
+
+            _productPage.GetAllProductsList();
+            _productPage.VerifyAdvancedSearchResults(searchText, ProductPageTitle.Electronics);
+
+
+        }
+
+        [Test]
+        public void AddProductsToCartTest()
+        {
+
+        }
 
 
         [Test]

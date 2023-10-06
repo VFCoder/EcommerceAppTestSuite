@@ -1,4 +1,5 @@
 ﻿using EcommerceAppTestingFramework.Utils;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,8 @@ namespace EcommerceAppTestingFramework.Pages
         private IWebElement CategoryMenuLink(string category) => _driver.FindElementWait(By.XPath($"//a[@href='/{category}']"), 2);
         private IWebElement SubCategoryMenuLink(string category) => _driver.FindElementWait(By.XPath($"//a[@href='/{category}']/ancestor::li//a"), 2);
         private IWebElement PageTitle => _driver.FindElementWait(By.CssSelector(".page-title"));
+        private IReadOnlyCollection<IWebElement> SearchBarDropdownItems => _driver.FindElements(By.CssSelector(".ui-menu-item"));
+        private IWebElement SearchBarDropdown => _driver.FindElementWait(By.Id("ui-id-1"), 2);
 
 
         public bool PageLoaded(string pageTitle)
@@ -70,9 +73,13 @@ namespace EcommerceAppTestingFramework.Pages
             return _driver.WaitForElementToBeVisible(LoginLink);
         }
 
-        public void Search(string searchText)
+        public void EnterSearchText(string searchText)
         {
             SearchBox.SendKeys(searchText);
+        }
+
+        public void ClickSearchButton()
+        {
             SearchBtn.Click();
         }
 
@@ -149,8 +156,8 @@ namespace EcommerceAppTestingFramework.Pages
 
         public void SelectCategoryLink(string category)
         {
-            try 
-            { 
+            try
+            {
                 CategoryMenuLink(category).Click();
             }
             catch (WebDriverTimeoutException)
@@ -158,6 +165,50 @@ namespace EcommerceAppTestingFramework.Pages
                 _driver.ActionWait().MoveToElement(SubCategoryMenuLink(category)).Perform();
                 CategoryMenuLink(category).Click();
             };
+        }
+
+
+        public List<Product>? GetAllSearchDropdownItems(string search)
+        {
+            List<Product> products = new List<Product>();
+
+            try { _driver.WaitForElementToBeVisible(SearchBarDropdown); }
+            catch { }
+
+            if (SearchBarDropdownItems.Count > 0)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"Number of search dropdown items displayed for {search}: {SearchBarDropdownItems.Count}");
+                Console.WriteLine();
+
+                foreach (var searchItemContainer in SearchBarDropdownItems)
+                {
+                    IWebElement ProductDropdownItemName = searchItemContainer.FindElement(By.CssSelector("span"));
+
+                    string productName = ProductDropdownItemName.Text;
+
+                    Assert.That(ProductDropdownItemName.Displayed, Is.True, "Product dropdown item(s) not displayed");
+                    Assert.That(productName.ToLower().Contains(search.ToLower()), Is.True, $"Search dropdown item {productName} do not match search text {search}");
+
+
+                    Product product = new Product
+                    {
+                        Name = productName,
+                    };
+
+                    products.Add(product);
+
+                    Console.WriteLine($"Product Name: {product.Name}");
+
+                }
+
+                return products;
+            }
+            else
+            {
+                Console.WriteLine($"No search dropdown items found for '{search}'.");
+                return null;
+            }
         }
 
         public class Category

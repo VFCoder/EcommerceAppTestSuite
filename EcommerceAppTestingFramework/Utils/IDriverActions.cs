@@ -11,12 +11,14 @@ namespace EcommerceAppTestingFramework.Utils
         IWebElement WaitForElementToBeClickable(IWebElement element, int? timeoutInSeconds = null);
         ReadOnlyCollection<IWebElement> FindElements(By by);
 
+        INavigation Navigate();
         void NavigateToBaseURL();
         void NavigateToAdminURL();
         void NavigateToApiURL(string endpoint = "");
         void Click(IWebElement element);
         void SendKeys(IWebElement element, string text);
         void SelectDropDownByText(IWebElement element, string text);
+        void SelectDropDownByTextContains(IWebElement element, string partialText);
         void WaitForLoad(int? timeoutInSeconds = null);
         //void HoverSelectWait(IWebElement hoverElement, IWebElement clickElement, int? timeoutInSeconds = null);
         void Dispose();

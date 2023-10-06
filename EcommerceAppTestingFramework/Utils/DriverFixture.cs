@@ -207,6 +207,24 @@ namespace EcommerceAppTestingFramework.Utils
             select.SelectByText(text);
         }
 
+        public void SelectDropDownByTextContains(IWebElement element, string partialText)
+        {
+            var elementClickable = WaitForElementToBeClickable(element);
+            var select = new SelectElement(elementClickable);
+            var options = select.Options;
+            var optionToSelect = options.FirstOrDefault(option => option.Text.Contains(partialText));
+
+            if (optionToSelect != null)
+            {
+                select.SelectByText(optionToSelect.Text);
+            }
+            else
+            {
+                throw new NoSuchElementException($"No option containing '{partialText}' found in the dropdown.");
+            }
+        }
+
+
         public void Dispose()
         {
             Quit();

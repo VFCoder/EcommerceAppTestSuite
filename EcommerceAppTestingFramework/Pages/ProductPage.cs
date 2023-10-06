@@ -38,10 +38,12 @@ namespace EcommerceAppTestingFramework.Pages
         private IWebElement ProductDetailsImage(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .product-essential .picture img"));
         private IWebElement ProductDetailsQuantity(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .add-to-cart-panel .qty-input"));
         private IWebElement ProductDetailsSKU(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .product-essential .sku .value"));
+        private IWebElement ProductDetailsManufacturer() => _driver.FindElementWait(By.CssSelector(".manufacturers a"));
         private IWebElement AddToCartBtnByIndex(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'][class*='add-to-cart-button']"));
         private IWebElement AddToCartBtnDetailsPage => _driver.FindElementWait(By.CssSelector(".add-to-cart-button"));
         private IWebElement NotificationAddedToCartSuccess => _driver.FindElementWait(By.CssSelector(".bar-notification.success"));
         private IWebElement CloseNotificationBtn => _driver.FindElementWait(By.CssSelector(".close"));
+        private IWebElement CategoriesBarProductDetails => _driver.FindElementWait(By.CssSelector("ul[itemscope]"));
 
 
         public bool AreProductsDisplayed()
@@ -59,6 +61,11 @@ namespace EcommerceAppTestingFramework.Pages
         public int GetProductCount()
         {
             return ProductItems.Count;
+        }
+
+        public string GetManufacturer()
+        {
+            return ProductDetailsManufacturer().Text;
         }
 
         public List<Product>? GetAllProductsList()
@@ -108,7 +115,7 @@ namespace EcommerceAppTestingFramework.Pages
                 return null;
             }
         }
-        
+
         public List<Subcategory>? GetAllSubcategories()
         {
             List<Subcategory> subcategories = new List<Subcategory>();
@@ -149,6 +156,131 @@ namespace EcommerceAppTestingFramework.Pages
                 return null;
             }
         }
+
+        public List<Product>? VerifySearchResults(string search)
+        {
+            List<Product> products = new List<Product>();
+
+            if (ProductItems.Count > 0)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"Number of search results displayed for {search}: {ProductItems.Count}");
+
+                foreach (var productContainer in ProductItems)
+                {
+                    IWebElement ProductListingName = productContainer.FindElement(By.CssSelector(".product-title a"));
+                    IWebElement ProductListingPrice = productContainer.FindElement(By.CssSelector(".price.actual-price"));
+                    IWebElement ProductListingImage = productContainer.FindElement(By.CssSelector(".picture img"));
+
+                    string productName = ProductListingName.Text;
+                    string productPrice = ProductListingPrice.Text;
+                    string productImageUrl = ProductListingImage.GetAttribute("src");
+
+                    Assert.That(ProductListingImage.Displayed, Is.True, "Product image(s) not displayed correctly");
+                    Assert.That(productName.ToLower().Contains(search.ToLower()), Is.True, $"Search results {productName} do not match search text {search}");
+
+
+                    productImageUrl = productImageUrl[..^9];
+
+                    Product product = new Product
+                    {
+                        Name = productName,
+                        Price = productPrice,
+                        ImageUrl = productImageUrl
+                    };
+
+                    products.Add(product);
+
+                    Console.WriteLine();
+                    Console.WriteLine($"Product Name: {product.Name}");
+                    Console.WriteLine($"Product Price: {product.Price}");
+                    Console.WriteLine($"Product Image URL: {product.ImageUrl}");
+                }
+
+                return products;
+            }
+            else
+            {
+                Console.WriteLine($"No search results found for '{search}'.");
+                return null;
+            }
+        }
+
+        public List<Product>? VerifyAdvancedSearchResults(string search, string? category = null, string? manufacturer = null)
+        {
+            List<Product> products = new List<Product>();
+
+            var productItems = _driver.FindElements(By.CssSelector(".product-item"));
+
+            if (productItems.Count > 0)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"Number of search results displayed for {search}: {productItems.Count}");
+
+                for (int i = 0; i < productItems.Count; i++)
+                {
+                    var productContainer = productItems[i];
+
+                    try
+                    {
+                        IWebElement ProductListingName = productContainer.FindElement(By.CssSelector(".product-title a"));
+                        IWebElement ProductListingPrice = productContainer.FindElement(By.CssSelector(".price.actual-price"));
+                        IWebElement ProductListingImage = productContainer.FindElement(By.CssSelector(".picture img"));
+
+                        string productName = ProductListingName.Text;
+                        string productPrice = ProductListingPrice.Text;
+                        string productImageUrl = ProductListingImage.GetAttribute("src");
+
+                        Assert.That(ProductListingImage.Displayed, Is.True, "Product image(s) not displayed correctly");
+                        Assert.That(productName.ToLower().Contains(search.ToLower()), Is.True, $"Search results {productName} do not match search text {search}");
+
+                        productImageUrl = productImageUrl[..^9];
+
+                        Product product = new Product
+                        {
+                            Name = productName,
+                            Price = productPrice,
+                            ImageUrl = productImageUrl
+                        };
+
+                        products.Add(product);
+
+                        Console.WriteLine();
+                        Console.WriteLine($"Product Name: {product.Name}");
+                        Console.WriteLine($"Product Price: {product.Price}");
+                        Console.WriteLine($"Product Image URL: {product.ImageUrl}");
+
+                        ProductListingName.Click();
+
+                        if (category != null)
+                        {
+                            Assert.That(CategoriesBarProductDetails.Text.Contains(category), Is.True, "Product category does not match");
+                        }
+                        if (manufacturer != null)
+                        {
+                            Assert.That(GetManufacturer() == manufacturer, Is.True, "Product manufacturer does not match");
+                        }
+
+                        _driver.Navigate().Back();
+                        productItems = _driver.FindElements(By.CssSelector(".product-item"));
+                    }
+                    catch (StaleElementReferenceException)
+                    {
+                        Console.WriteLine($"Stale element exception occurred for product item at index {i}. Retrying...");
+                        productItems = _driver.FindElements(By.CssSelector(".product-item"));
+                        i--; 
+                    }
+                }
+
+                return products;
+            }
+            else
+            {
+                Console.WriteLine($"No search results found for '{search}'.");
+                return null;
+            }
+        }
+
 
         public Product? GetProductFromList(int index)
         {
@@ -241,7 +373,14 @@ namespace EcommerceAppTestingFramework.Pages
             CloseNotificationBtn.Click();
         }
 
+        public string GetCategoriesText()
+        {
+            return CategoriesBarProductDetails.Text;
+        }
+
     }
+
+    
 
     public class Product
     {
@@ -251,7 +390,7 @@ namespace EcommerceAppTestingFramework.Pages
         public string Quantity { get; set; }
         public string SKU { get; set; }
     }
-    
+
     public class Subcategory
     {
         public string Name { get; set; }
@@ -276,6 +415,13 @@ namespace EcommerceAppTestingFramework.Pages
         public const string Books = "Books";
         public const string Jewelry = "Jewelry";
         public const string GiftCards = "Gift Cards";
+    }
+
+    public class ManufacturerList
+    {
+        public const string Apple = "Apple";
+        public const string HP = "HP";
+        public const string Nike = "Nike";
     }
 }
 
