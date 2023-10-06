@@ -1,0 +1,15 @@
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\obj\Debug\net7.0\EcommerceAppTestingFramework.csproj.AssemblyReference.cache
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\obj\Debug\net7.0\EcommerceAppTestingFramework.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\obj\Debug\net7.0\EcommerceAppTestingFramework.AssemblyInfoInputs.cache
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\obj\Debug\net7.0\EcommerceAppTestingFramework.AssemblyInfo.cs
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\obj\Debug\net7.0\EcommerceAppTestingFramework.csproj.CoreCompileInputs.cache
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\bin\Debug\net7.0\selenium-manager\linux\selenium-manager
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\bin\Debug\net7.0\selenium-manager\macos\selenium-manager
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\bin\Debug\net7.0\selenium-manager\windows\selenium-manager.exe
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\bin\Debug\net7.0\EcommerceAppTestingFramework.deps.json
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\bin\Debug\net7.0\EcommerceAppTestingFramework.dll
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\bin\Debug\net7.0\EcommerceAppTestingFramework.pdb
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\obj\Debug\net7.0\EcommerceAppTestingFramework.dll
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\obj\Debug\net7.0\refint\EcommerceAppTestingFramework.dll
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\obj\Debug\net7.0\EcommerceAppTestingFramework.pdb
+C:\Users\Vincent Field\source\repos\EcommerceAppTestSuite\EcommerceAppTestingFramework\obj\Debug\net7.0\ref\EcommerceAppTestingFramework.dll
