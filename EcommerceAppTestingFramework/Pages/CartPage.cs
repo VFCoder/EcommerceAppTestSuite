@@ -1,4 +1,4 @@
-﻿using EcommerceAppTestingFramework.Utils;
+﻿using EcommerceAppTestingFramework.Drivers;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -32,6 +32,9 @@ namespace EcommerceAppTestingFramework.Pages
         private IWebElement PriceBoxTax => _driver.FindElementWait(By.CssSelector(".tax-value .value-summary"));
         private IWebElement PriceBoxTotal => _driver.FindElementWait(By.CssSelector(".order-total .value-summary"));
         private IWebElement PriceBoxPoints => _driver.FindElementWait(By.CssSelector(".earn-reward-points .value-summary"));
+        private IWebElement ProductItemByCartOrder(int number) => _driver.FindElementWait(By.CssSelector($"tr:nth-of-type({number}) td.product"));
+
+        
 
         public bool AreProductsDisplayedInCart()
         {
@@ -48,6 +51,19 @@ namespace EcommerceAppTestingFramework.Pages
         public int GetProductsInCartCount()
         {
             return CartRows.Count;
+        }
+
+        public string? GetProductNameByCartOrder(int order)
+        {
+            try
+            {
+                return ProductItemByCartOrder(order).Text;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
+            }
         }
 
         public List<CartItem> GetCartItems()

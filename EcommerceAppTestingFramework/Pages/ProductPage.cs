@@ -1,5 +1,4 @@
-﻿using EcommerceAppTestingFramework.Pages;
-using EcommerceAppTestingFramework.Utils;
+﻿using EcommerceAppTestingFramework.Drivers;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using System;
@@ -8,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static EcommerceAppTestingFramework.Pages.CheckoutPage;
-using static EcommerceAppTestingFramework.Utils.UserDataAndOrderVerifier;
+using static EcommerceAppTestingFramework.Pages.UserDataAndOrderVerifier;
 
 namespace EcommerceAppTestingFramework.Pages
 {
@@ -44,6 +43,7 @@ namespace EcommerceAppTestingFramework.Pages
         private IWebElement NotificationAddedToCartSuccess => _driver.FindElementWait(By.CssSelector(".bar-notification.success"));
         private IWebElement CloseNotificationBtn => _driver.FindElementWait(By.CssSelector(".close"));
         private IWebElement CategoriesBarProductDetails => _driver.FindElementWait(By.CssSelector("ul[itemscope]"));
+        private IWebElement ProductItemByListingOrder(int number) => _driver.FindElementWait(By.CssSelector($".item-box:nth-of-type({number}) .product-title a"));
 
 
         public bool AreProductsDisplayed()
@@ -55,6 +55,31 @@ namespace EcommerceAppTestingFramework.Pages
             catch (NoSuchElementException)
             {
                 return false;
+            }
+        }
+
+        public string? GetProductNameByListingOrder(int order)
+        {
+            try 
+            { 
+                return ProductItemByListingOrder(order).Text; 
+            }
+            catch (Exception e) 
+            { 
+                Console.WriteLine(e.Message);
+                return null; 
+            }
+        }
+
+        public void ClickProductDetailsByListingOrder(int order)
+        {
+            try
+            {
+                ProductItemByListingOrder(order).Click();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);               
             }
         }
 

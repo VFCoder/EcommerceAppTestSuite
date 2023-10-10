@@ -16,18 +16,19 @@ using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium.Interactions;
 using EcommerceAppTestingFramework.Configuration;
 
-namespace EcommerceAppTestingFramework.Utils
+namespace EcommerceAppTestingFramework.Drivers
 {
     public class DriverFixture : IWebDriver, IDriverActions
     {
-        private IWebDriver Driver { get; }
+        private IWebDriver Driver { get; set; }
         public WebDriverWait DriverWait { get; }
 
         private TestConfiguration _testConfig;
 
-        public DriverFixture(TestConfiguration testConfig)
+        public DriverFixture(TestConfiguration testConfig, ChromeOptions chromeOptions = null)
         {
             _testConfig = testConfig;
+
 
             //set environment variable: console: setx ENVIRONMENT Local/Azure /M
             var testRunType = Enum.Parse<TestRunType>(_testConfig.GetSetting("TestRunType"), ignoreCase: true);
@@ -35,8 +36,20 @@ namespace EcommerceAppTestingFramework.Utils
 
             if (testRunType == TestRunType.Local)
             {
-                Driver = GetWebDriver(browserType);
+                if (chromeOptions != null)
+                {
+                    Driver = new ChromeDriver(chromeOptions);
+                }
+                else
+                {
+                    Driver = GetWebDriver(browserType);
+                }
             }
+
+            /*            if (testRunType == TestRunType.Local)
+                        {
+                            Driver = GetWebDriver(browserType);
+                        }*/
             else if (testRunType == TestRunType.Grid)
             {
                 var gridUrl = testConfig.GetSetting("GridUrl");
@@ -96,6 +109,7 @@ namespace EcommerceAppTestingFramework.Utils
                 _ => new RemoteWebDriver(new Uri(GridUrl), new ChromeOptions())
             };
         }
+
 
         public void NavigateToBaseURL()
         {

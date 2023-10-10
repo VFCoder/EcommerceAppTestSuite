@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using EcommerceAppTestingFramework.Drivers;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -6,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EcommerceAppTestingFramework.Utils
+namespace EcommerceAppTestingFramework.Pages
 {
     public class UserDataAndOrderVerifier
     {
-        
+
         private readonly IDriverActions _driver;
         private bool IsCartPageContext { get; }
 
@@ -32,10 +33,20 @@ namespace EcommerceAppTestingFramework.Utils
         private IWebElement PriceBoxShipping => _driver.FindElementWait(By.CssSelector("tr:nth-of-type(2) .cart-total-right span"));
         private IWebElement PriceBoxTax => _driver.FindElementWait(By.CssSelector("tr:nth-of-type(3) .cart-total-right span"));
         private IWebElement PriceBoxTotal => _driver.FindElementWait(By.CssSelector("tr:nth-of-type(4) .cart-total-right span"));
-        private IWebElement PriceBoxPoints => _driver.FindElementWait(By.CssSelector("tr:nth-of-type(5) .cart-total-right span"),1);
+        private IWebElement PriceBoxPoints => _driver.FindElementWait(By.CssSelector("tr:nth-of-type(5) .cart-total-right span"), 1);
 
-        
 
+        public string GetTotalPrice()
+        {
+            _driver.WaitForLoad();
+            return PriceBoxTotal.Text;
+        }
+
+        public int GetProductCount()
+        {
+            _driver.WaitForLoad();
+            return ProductRows.Count;
+        }
 
         public List<ProductTable> GetProductTableItems()
         {
@@ -149,7 +160,7 @@ namespace EcommerceAppTestingFramework.Utils
             public string Total { get; set; }
             public string? Points { get; set; }
         }
-        
+
         public class AddressInfoBox
         {
             public string Name { get; set; }

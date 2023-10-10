@@ -2,7 +2,7 @@
 using OpenQA.Selenium;
 using System.Collections.ObjectModel;
 
-namespace EcommerceAppTestingFramework.Utils
+namespace EcommerceAppTestingFramework.Drivers
 {
     public interface IDriverActions
     {

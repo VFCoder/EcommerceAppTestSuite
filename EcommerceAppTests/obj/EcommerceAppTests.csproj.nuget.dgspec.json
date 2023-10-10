@@ -48,6 +48,10 @@
               "target": "Package",
               "version": "[3.11.0, )"
             },
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[5.1.1, )"
+            },
             "Microsoft.Extensions.Configuration.Abstractions": {
               "target": "Package",
               "version": "[7.0.0, )"
@@ -67,6 +71,10 @@
             "Selenium.WebDriver": {
               "target": "Package",
               "version": "[4.13.1, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.8.5, )"
             }
           },
           "imports": [

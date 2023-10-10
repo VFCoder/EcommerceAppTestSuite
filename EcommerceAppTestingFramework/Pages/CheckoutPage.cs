@@ -1,4 +1,4 @@
-﻿using EcommerceAppTestingFramework.Utils;
+﻿using EcommerceAppTestingFramework.Drivers;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -56,11 +56,49 @@ namespace EcommerceAppTestingFramework.Pages
         private IWebElement AddressCountry(string addressType) => _driver.FindElementWait(By.CssSelector($".{addressType}-info .info-list .country"));
         private IWebElement AddressPaymentMethod => _driver.FindElementWait(By.CssSelector(".info-list .payment-method"));
         private IWebElement AddressShippingMethod => _driver.FindElementWait(By.CssSelector(".info-list .shipping-method"));
+        private IWebElement BillingAddressCountryDropdown => _driver.FindElementWait(By.Id("BillingNewAddress_CountryId"));
+        private IWebElement BillingAddressStateDropdown => _driver.FindElementWait(By.Id("BillingNewAddress_StateProvinceId"));
+        private IWebElement BillingAddressCityInput => _driver.FindElementWait(By.Id("BillingNewAddress_City"));
+        private IWebElement BillingAddressStreetInput => _driver.FindElementWait(By.Id("BillingNewAddress_Address1"));
+        private IWebElement BillingAddressZipInput => _driver.FindElementWait(By.Id("BillingNewAddress_ZipPostalCode"));
+        private IWebElement BillingAddressPhoneInput => _driver.FindElementWait(By.Id("BillingNewAddress_PhoneNumber"));
 
 
 
 
         public string pageTitle = "Checkout";
+
+        public void SelectBillingAddressCountryDropdown(string country)
+        {
+            _driver.SelectDropDownByTextContains(BillingAddressCountryDropdown, country);
+            _driver.WaitForLoad();
+
+        }
+
+        public void SelectBillingAddressStateDropdown(string state)
+        {
+            _driver.SelectDropDownByTextContains(BillingAddressStateDropdown, state);
+        }
+
+        public void EnterBillingAddressCity(string city)
+        {
+            BillingAddressCityInput.SendKeys(city);
+        }
+
+        public void EnterBillingAddressStreet(string street)
+        {
+            BillingAddressStreetInput.SendKeys(street);
+        }
+        
+        public void EnterBillingAddressZip(string zip)
+        {
+            BillingAddressZipInput.SendKeys(zip);
+        }
+        
+        public void EnterBillingAddressPhone(string phone)
+        {
+            BillingAddressPhoneInput.SendKeys(phone);
+        }
 
         public void ClickContinueFromBillingAddress()
         {
