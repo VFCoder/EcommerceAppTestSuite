@@ -29,6 +29,7 @@ namespace EcommerceAppTestingFramework.Configuration
         public string GetBaseUrl() => _configuration["BaseUrl"];
         public string GetAdminUrl() => _configuration["AdminUrl"];
         public string GetApiUrl() => _configuration["ApiUrl"];
+        public string GetAuthUrl() => _configuration["AuthUrl"];
         public string GetSqlConnection() => _configuration["SqlConnection"];
 
     }

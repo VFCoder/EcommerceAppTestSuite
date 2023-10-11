@@ -246,14 +246,12 @@ namespace EcommerceAppTestingFramework.Helpers
             using (var command = CreateCommand(connection, query))
             using (var reader = command.ExecuteReader())
             {
-                // Determine column widths
                 int[] columnWidths = new int[reader.FieldCount];
                 for (int i = 0; i < reader.FieldCount; i++)
                 {
                     columnWidths[i] = Math.Max(reader.GetName(i).Length, 10); 
                 }
 
-                // Print column headers
                 for (int i = 0; i < reader.FieldCount; i++)
                 {
                     Console.Write(reader.GetName(i).PadRight(columnWidths[i]) + "\t");
@@ -307,6 +305,38 @@ namespace EcommerceAppTestingFramework.Helpers
             }
         }
 
+        public static T GetSingleValue<T>(this SqlConnection connection, string tableName, string targetColumnName, string conditionColumnName, object conditionValue)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+
+            string selectQuery = $"SELECT TOP 1 {targetColumnName} FROM {tableName} WHERE {conditionColumnName} = @ConditionValue";
+
+            using (SqlCommand command = new SqlCommand(selectQuery, connection))
+            {
+                command.Parameters.AddWithValue("@ConditionValue", conditionValue);
+
+                object result = command.ExecuteScalar();
+
+                if (result != null && result != DBNull.Value)
+                {
+                    if (result is T)
+                    {
+                        return (T)result;
+                    }
+                    else
+                    {
+                        throw new InvalidCastException($"The value in the database is not of type {typeof(T).Name}.");
+                    }
+                }
+                else
+                {
+                    return default(T);
+                }
+            }
+        }
 
 
     }

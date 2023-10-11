@@ -1,22 +1,9 @@
 ﻿using EcommerceAppTestingFramework.Configuration;
-using EcommerceAppTestingFramework.Pages;
 using EcommerceAppTestingFramework.Drivers;
-using Microsoft.Extensions.Configuration;
-using NUnit.Framework.Constraints;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static EcommerceAppTestingFramework.Pages.BasePage;
-using static EcommerceAppTestingFramework.Pages.CartPage;
-using static EcommerceAppTestingFramework.Pages.CheckoutPage;
-using static EcommerceAppTestingFramework.Pages.RegisterPage;
-using static EcommerceAppTestingFramework.Pages.UserDataAndOrderVerifier;
 using Microsoft.Data.SqlClient;
 using EcommerceAppTestingFramework.Helpers;
 using OpenQA.Selenium.Chrome;
-using EcommerceAppTestingFramework.Models.DatabaseModels;
 
 namespace EcommerceAppTests.UITests
 {
@@ -27,19 +14,7 @@ namespace EcommerceAppTests.UITests
     {
         private TestConfiguration _testConfig;
         private IDriverActions _driver;
-        private BasePage _basePage;
-        private HomePage _homePage;
-        private LoginPage _loginPage;
-        private RegisterPage _registerPage;
-        private ProductPage _productPage;
-        private SearchPage _searchPage;
-        private UserDataAndOrderVerifier _verifier;
-        private CartPage _cartPage;
-        private CheckoutPage _checkoutPage;
-        private OrderDetailsPage _orderDetailsPage;
-        private string _baseUrl;
-        private string _adminUrl;
-        private string _apiUrl;
+
         private string _sqlConnection;
 
         [SetUp]
@@ -51,19 +26,6 @@ namespace EcommerceAppTests.UITests
             _testConfig = new TestConfiguration();
             _driver = new DriverFixture(_testConfig, chromeOptions);
 
-            _basePage = new BasePage(_driver);
-            _homePage = new HomePage(_driver);
-            _registerPage = new RegisterPage(_driver);
-            _loginPage = new LoginPage(_driver);
-            _productPage = new ProductPage(_driver);
-            _searchPage = new SearchPage(_driver);
-            _verifier = new UserDataAndOrderVerifier(_driver);
-            _cartPage = new CartPage(_driver);
-            _checkoutPage = new CheckoutPage(_driver);
-            _orderDetailsPage = new OrderDetailsPage(_driver);
-            _baseUrl = _testConfig.GetBaseUrl();
-            _adminUrl = _testConfig.GetAdminUrl();
-            _apiUrl = _testConfig.GetApiUrl();
             _sqlConnection = _testConfig.GetSqlConnection();
 
         }
@@ -79,23 +41,78 @@ namespace EcommerceAppTests.UITests
         {
             using (SqlConnection connection = new SqlConnection(_sqlConnection))
             {
+                string tableName = "ProductReview";
+                string reviewTitle = "Best Computer Ever";
+                string reviewText = "I've never owned such a powerful machine.";
+
                 var data = new Dictionary<string, object>
                 {
-                    { "CustomerId", 2 },
-                    { "ProductId", 1 },
+
+                    { "CustomerId", 7 },
+                    { "ProductId", 2 },
                     { "StoreId", 1 },
                     { "IsApproved", 1 },
-                    { "Title", "Great Computer" },
-                    { "ReviewText", "Excellent computer, high quality, very fast and quiet." },
+                    { "Title", reviewTitle},
+                    { "ReviewText", reviewText },
                     { "CustomerNotifiedOfReply", 1 },
                     { "Rating", 5 },
-                    { "HelpfulYesTotal", 2 },
+                    { "HelpfulYesTotal", 1 },
                     { "HelpfulNoTotal", 0 },
                     { "CreatedOnUtc", DateTime.UtcNow },
                 };
 
-                connection.InsertRecord("ProductReview", data);
+                connection.InsertRecord(tableName, data);
+
+                //return review id:
+                int reviewId = connection.GetSingleValue<int>(tableName, "Id", "Title", reviewTitle);
+
+                //verify insert:
+
+                connection.VerifyCellData(tableName, "Title", "Id", reviewId, reviewTitle);
+                connection.VerifyCellData(tableName, "ReviewText", "Id", reviewId, reviewText);
+
+                UpdateProductReviewColumn();
+
             }
+        }
+        [Test]
+        public void UpdateProductReviewColumn()
+        {
+            using (SqlConnection connection = new SqlConnection(_sqlConnection))
+            {
+
+                string tableName = "Product";
+                string conditionColumnName = "Id";
+                object conditionValue = 2;
+
+                string ratingSumColumn = "ApprovedRatingSum";
+
+                //Return ApprovedRatingSum int:
+                int prevRatingSumInt = connection.GetSingleValue<int>(tableName, ratingSumColumn, conditionColumnName, conditionValue);
+
+                //Calculate new rating sum:
+                object newRatingSum = prevRatingSumInt + 5;
+
+                //Update ApprovedRatingSum:
+                connection.UpdateColumnValue(tableName, ratingSumColumn, newRatingSum, conditionColumnName, conditionValue);
+
+                string totalReviewsColumn = "ApprovedTotalReviews";
+
+                //Return ApprovedTotalReviews int:
+                int prevTotalReviewsInt = connection.GetSingleValue<int>(tableName, totalReviewsColumn, conditionColumnName, conditionValue);
+
+                //Calculate new total reviews:
+                object newTotalReviews = prevTotalReviewsInt + 1;
+
+                //Update ApprovedTotalReviews:
+                connection.UpdateColumnValue(tableName, totalReviewsColumn, newTotalReviews, conditionColumnName, conditionValue);
+
+                //verify update:
+
+                connection.VerifyCellData(tableName, ratingSumColumn, conditionColumnName, conditionValue, newRatingSum);
+                connection.VerifyCellData(tableName, totalReviewsColumn, conditionColumnName, conditionValue, newTotalReviews);
+            }
+
         }
 
         [Test]
