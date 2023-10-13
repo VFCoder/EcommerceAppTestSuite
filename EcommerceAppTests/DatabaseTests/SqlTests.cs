@@ -5,10 +5,10 @@ using Microsoft.Data.SqlClient;
 using EcommerceAppTestingFramework.Helpers;
 using OpenQA.Selenium.Chrome;
 
-namespace EcommerceAppTests.UITests
+namespace EcommerceAppTests.DatabaseTests
 {
     [TestFixture]
-    [Category("UI_DatabaseTests")]
+    [Category("DatabaseTests")]
     [Parallelizable]
     public class CustomerAppDatabaseTest
     {

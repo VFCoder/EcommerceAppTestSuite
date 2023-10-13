@@ -15,4 +15,9 @@ namespace EcommerceAppTestingFramework.Models.ApiModels
         public bool remember_me { get; set; }
     }
 
+    public class CreateNewUserBody
+    {
+
+    }
+
 }
