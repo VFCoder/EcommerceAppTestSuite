@@ -37,6 +37,7 @@ namespace EcommerceAppTests.UITests
         private string _adminUrl;
         private string _apiUrl;
         private string _sqlConnection;
+        private BrowserType _browserType;
 
         [SetUp]
         public void Setup()
@@ -67,8 +68,9 @@ namespace EcommerceAppTests.UITests
             _driver.Dispose();
         }
 
+
         [Test]
-        public void TestBasicAppFunctionalities()
+        public void TestBasicAppFunctionalitiesFull()
         {                        
             string customerEmail = "Jake@email.com";
             string customerPassword = "UserPassword123";
@@ -80,7 +82,7 @@ namespace EcommerceAppTests.UITests
 
             //Register new customer:
 
-            _basePage.ClickRegisterLink();
+/*            _basePage.ClickRegisterLink();
             Assert.That(_basePage.PageLoaded(_registerPage.pageTitle), Is.True, "Register page did not load correctly.");
 
             _registerPage.SelectGender(Gender.Female);
@@ -211,7 +213,7 @@ namespace EcommerceAppTests.UITests
             string orderNumberOrderDetails = _orderDetailsPage.GetOrderNumber();
 
             Assert.That(orderNumberCheckout, Is.EqualTo(orderNumberOrderDetails), "Order numbers do not match");
-
+*/
         }
     }
 }

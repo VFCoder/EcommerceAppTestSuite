@@ -25,14 +25,9 @@ namespace EcommerceAppTestingFramework.Drivers
 
         private TestConfiguration _testConfig;
 
-        public DriverFixture(TestConfiguration testConfig, ChromeOptions chromeOptions = null)
+        public DriverFixture(TestConfiguration testConfig, ChromeOptions? chromeOptions = null, BrowserType? browserType = null)
         {
-            _testConfig = testConfig;
-
-
-            //set environment variable: console: setx ENVIRONMENT Local/Azure /M
-            var testRunType = Enum.Parse<TestRunType>(_testConfig.GetSetting("TestRunType"), ignoreCase: true);
-            var browserType = Enum.Parse<BrowserType>(_testConfig.GetSetting("BrowserType"), ignoreCase: true);
+            var testRunType = Enum.Parse<TestRunType>(testConfig.GetSetting("TestRunType"), ignoreCase: true);
 
             if (testRunType == TestRunType.Local)
             {
@@ -42,24 +37,41 @@ namespace EcommerceAppTestingFramework.Drivers
                 }
                 else
                 {
-                    Driver = GetWebDriver(browserType);
+                    Driver = GetWebDriver(browserType ?? BrowserType.Chrome);
                 }
             }
-
-            /*            if (testRunType == TestRunType.Local)
-                        {
-                            Driver = GetWebDriver(browserType);
-                        }*/
             else if (testRunType == TestRunType.Grid)
             {
                 var gridUrl = testConfig.GetSetting("GridUrl");
-                Driver = GetRemoteWebDriver(browserType, gridUrl);
+                Driver = GetRemoteWebDriver(browserType ?? BrowserType.Chrome, gridUrl);
             }
             else
             {
                 throw new ArgumentException("Invalid TestRunType specified.");
             }
+        }
+        private IWebDriver GetWebDriver(BrowserType browserType)
+        {
+            return browserType switch
+            {
+                BrowserType.Chrome => new ChromeDriver(),
+                BrowserType.Firefox => new FirefoxDriver(),
+                BrowserType.Safari => new SafariDriver(),
+                BrowserType.Edge => new EdgeDriver(),
+                _ => new ChromeDriver()
+            };
+        }
 
+        private IWebDriver GetRemoteWebDriver(BrowserType browserType, string GridUrl)
+        {
+            return browserType switch
+            {
+                BrowserType.Chrome => new RemoteWebDriver(new Uri(GridUrl), new ChromeOptions()),
+                BrowserType.Firefox => new RemoteWebDriver(new Uri(GridUrl), new FirefoxOptions()),
+                BrowserType.Safari => new RemoteWebDriver(new Uri(GridUrl), new SafariOptions()),
+                BrowserType.Edge => new RemoteWebDriver(new Uri(GridUrl), new EdgeOptions()),
+                _ => new RemoteWebDriver(new Uri(GridUrl), new ChromeOptions())
+            };
         }
 
         public string Url { get => Driver.Url; set => Driver.Url = value; }
@@ -85,30 +97,6 @@ namespace EcommerceAppTestingFramework.Drivers
         public INavigation Navigate() => Driver.Navigate();
 
         public ITargetLocator SwitchTo() => Driver.SwitchTo();
-
-        private IWebDriver GetWebDriver(BrowserType browserType)
-        {
-            return browserType switch
-            {
-                BrowserType.Chrome => new ChromeDriver(),
-                BrowserType.Firefox => new FirefoxDriver(),
-                BrowserType.Safari => new SafariDriver(),
-                BrowserType.Edge => new EdgeDriver(),
-                _ => new ChromeDriver()
-            };
-        }
-
-        private IWebDriver GetRemoteWebDriver(BrowserType browserType, string GridUrl)
-        {
-            return browserType switch
-            {
-                BrowserType.Chrome => new RemoteWebDriver(new Uri(GridUrl), new ChromeOptions()),
-                BrowserType.Firefox => new RemoteWebDriver(new Uri(GridUrl), new FirefoxOptions()),
-                BrowserType.Safari => new RemoteWebDriver(new Uri(GridUrl), new SafariOptions()),
-                BrowserType.Edge => new RemoteWebDriver(new Uri(GridUrl), new EdgeOptions()),
-                _ => new RemoteWebDriver(new Uri(GridUrl), new ChromeOptions())
-            };
-        }
 
 
         public void NavigateToBaseURL()
@@ -242,6 +230,7 @@ namespace EcommerceAppTestingFramework.Drivers
         public void Dispose()
         {
             Quit();
+
         }
 
 
