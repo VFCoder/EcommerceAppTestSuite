@@ -25,9 +25,7 @@ namespace EcommerceAppTests.DatabaseTests
 
             _testConfig = new TestConfiguration();
             _driver = new DriverFixture(_testConfig, chromeOptions);
-
             _sqlConnection = _testConfig.GetSqlConnection();
-
         }
 
         [TearDown]
@@ -37,15 +35,17 @@ namespace EcommerceAppTests.DatabaseTests
         }
 
         [Test]
-        public void InsertProductReviewIntoProductReviewTable()
+        public void InsertReviewIntoProductReviewTable()
         {
-            using (SqlConnection connection = new SqlConnection(_sqlConnection))
-            {
-                string tableName = "ProductReview";
-                string reviewTitle = "Best Computer Ever";
-                string reviewText = "I've never owned such a powerful machine.";
+            using SqlConnection connection = new(_sqlConnection);
 
-                var data = new Dictionary<string, object>
+            //Insert required fields into table:
+
+            string tableName = "ProductReview";
+            string reviewTitle = "Best Computer Ever";
+            string reviewText = "I've never owned such a powerful machine.";
+
+            var data = new Dictionary<string, object>
                 {
 
                     { "CustomerId", 7 },
@@ -61,79 +61,87 @@ namespace EcommerceAppTests.DatabaseTests
                     { "CreatedOnUtc", DateTime.UtcNow },
                 };
 
-                connection.InsertRecord(tableName, data);
+            connection.InsertRecord(tableName, data);
 
-                //return review id:
-                int reviewId = connection.GetSingleValue<int>(tableName, "Id", "Title", reviewTitle);
+            //return review id:
 
-                //verify insert:
+            int reviewId = connection.GetSingleValue<int>(tableName, "Id", "Title", reviewTitle);
 
-                connection.VerifyCellData(tableName, "Title", "Id", reviewId, reviewTitle);
-                connection.VerifyCellData(tableName, "ReviewText", "Id", reviewId, reviewText);
+            //verify insert:
 
-                UpdateProductReviewColumn();
+            connection.VerifyCellData(tableName, "Title", "Id", reviewId, reviewTitle);
+            connection.VerifyCellData(tableName, "ReviewText", "Id", reviewId, reviewText);
 
-            }
+            //Update product table to display review on app:
+
+            UpdateProductReviewColumnInProductTable();
         }
         [Test]
-        public void UpdateProductReviewColumn()
+        public void UpdateProductReviewColumnInProductTable()
         {
-            using (SqlConnection connection = new SqlConnection(_sqlConnection))
-            {
+            using SqlConnection connection = new(_sqlConnection);
 
-                string tableName = "Product";
-                string conditionColumnName = "Id";
-                object conditionValue = 2;
+            //Locate target column to retrieve value:
 
-                string ratingSumColumn = "ApprovedRatingSum";
+            string tableName = "Product";
+            string conditionColumnName = "Id";
+            object conditionValue = 2;
+            string ratingSumColumn = "ApprovedRatingSum";
 
-                //Return ApprovedRatingSum int:
-                int prevRatingSumInt = connection.GetSingleValue<int>(tableName, ratingSumColumn, conditionColumnName, conditionValue);
+            //Return previous ApprovedRatingSum int:
 
-                //Calculate new rating sum:
-                object newRatingSum = prevRatingSumInt + 5;
+            int prevRatingSumInt = connection.GetSingleValue<int>(tableName, ratingSumColumn, conditionColumnName, conditionValue);
 
-                //Update ApprovedRatingSum:
-                connection.UpdateColumnValue(tableName, ratingSumColumn, newRatingSum, conditionColumnName, conditionValue);
+            //Calculate new rating sum:
 
-                string totalReviewsColumn = "ApprovedTotalReviews";
+            object newRatingSum = prevRatingSumInt + 5; //add new review rating
 
-                //Return ApprovedTotalReviews int:
-                int prevTotalReviewsInt = connection.GetSingleValue<int>(tableName, totalReviewsColumn, conditionColumnName, conditionValue);
+            //Update ApprovedRatingSum:
 
-                //Calculate new total reviews:
-                object newTotalReviews = prevTotalReviewsInt + 1;
+            connection.UpdateColumnValue(tableName, ratingSumColumn, newRatingSum, conditionColumnName, conditionValue);
+            string totalReviewsColumn = "ApprovedTotalReviews";
 
-                //Update ApprovedTotalReviews:
-                connection.UpdateColumnValue(tableName, totalReviewsColumn, newTotalReviews, conditionColumnName, conditionValue);
+            //Return ApprovedTotalReviews int:
 
-                //verify update:
+            int prevTotalReviewsInt = connection.GetSingleValue<int>(tableName, totalReviewsColumn, conditionColumnName, conditionValue);
 
-                connection.VerifyCellData(tableName, ratingSumColumn, conditionColumnName, conditionValue, newRatingSum);
-                connection.VerifyCellData(tableName, totalReviewsColumn, conditionColumnName, conditionValue, newTotalReviews);
-            }
+            //Calculate new total reviews:
+
+            object newTotalReviews = prevTotalReviewsInt + 1;
+
+            //Update ApprovedTotalReviews:
+
+            connection.UpdateColumnValue(tableName, totalReviewsColumn, newTotalReviews, conditionColumnName, conditionValue);
+
+            //verify update:
+
+            connection.VerifyCellData(tableName, ratingSumColumn, conditionColumnName, conditionValue, newRatingSum);
+            connection.VerifyCellData(tableName, totalReviewsColumn, conditionColumnName, conditionValue, newTotalReviews);
 
         }
 
         [Test]
         public void VerifyDataInTable()
         {
-            using (SqlConnection connection = new SqlConnection(_sqlConnection))
-            {
-                string tableName = "Address";
-                string columnName = "Company";
-                string whereClause = "Id = 2";
-                object expectedData = "VFCoder Company";
-                bool convertData = false;
+            using SqlConnection connection = new(_sqlConnection);
 
-                connection.VerifyCellData(tableName, columnName, whereClause, expectedData, convertData);
-            }
+            //Locate data to verify:
+
+            string tableName = "Address";
+            string columnName = "Company";
+            string whereClause = "Id = 2";
+            object expectedData = "VFCoder Company";
+            bool convertData = false;
+
+            //verify data:
+
+            connection.VerifyCellData(tableName, columnName, whereClause, expectedData, convertData);
         }
 
         [Test]
         public void DeleteRowTest()
         {
-            using SqlConnection connection = new SqlConnection(_sqlConnection);
+            using SqlConnection connection = new(_sqlConnection);
 
             connection.DeleteRow("TableName", "targetColumn", "targetValue");
         }
@@ -141,70 +149,33 @@ namespace EcommerceAppTests.DatabaseTests
         [Test]
         public void UpdateColumnCustomerAddress()
         {
-            using (SqlConnection connection = new SqlConnection(_sqlConnection))
-            {
+            using SqlConnection connection = new(_sqlConnection);
 
-                string tableName = "Address";
-                string targetColumnName = "Address2";
-                object newValue = "Apt. 6"; 
-                string conditionColumnName = "Id"; 
-                object conditionValue = 1; 
+            //Locate cell to update and update value:
 
-                connection.UpdateColumnValue(tableName, targetColumnName, newValue, conditionColumnName, conditionValue);
+            string tableName = "Address";
+            string targetColumnName = "Address2";
+            object newValue = "Apt. 6";
+            string conditionColumnName = "Id";
+            object conditionValue = 1;
 
-                //verify update:
+            connection.UpdateColumnValue(tableName, targetColumnName, newValue, conditionColumnName, conditionValue);
 
-                object expectedData = newValue;
+            //verify update:
 
-                connection.VerifyCellData(tableName, targetColumnName, conditionColumnName, conditionValue, expectedData);
-            }
+            object expectedData = newValue;
 
+            connection.VerifyCellData(tableName, targetColumnName, conditionColumnName, conditionValue, expectedData);
         }
-
+                
         [Test]
-        public void UpdateColumnProductReviews()
+        public void ViewCustomerIdQuery()
         {
-            using (SqlConnection connection = new SqlConnection(_sqlConnection))
-            {
+            using SqlConnection connection = new(_sqlConnection);
 
-                string tableName = "Product";
-                string targetColumnName = "ApprovedRatingSum";
-                object newValue = 9;
-                string conditionColumnName = "Id";
-                object conditionValue = 1;
-
-                connection.UpdateColumnValue(tableName, targetColumnName, newValue, conditionColumnName, conditionValue);
-
-                //verify update:
-
-                object expectedData = newValue;
-
-                connection.VerifyCellData(tableName, targetColumnName, conditionColumnName, conditionValue, expectedData);
-            }
-
-        }
-
-        [Test]
-        public void GetTableDataFromQuery()
-        {
-            using (SqlConnection connection = new SqlConnection(_sqlConnection))
-            {
-                string query = "SELECT * FROM [Order] WHERE CustomerId = 1";
-                connection.PrintQueryResults(query);
-            }
-        }
-        
-        
-        [Test]
-        public void GetCustomerIdQuery()
-        {
             string columnValue = "admin@vfcoder.com";
-
-            using (SqlConnection connection = new SqlConnection(_sqlConnection))
-            {
-                string query = $"SELECT Id FROM Customer WHERE Email = '{columnValue}'";
-                connection.PrintQueryResults(query);
-            }
+            string query = $"SELECT Id FROM Customer WHERE Email = '{columnValue}'";
+            connection.PrintQueryResults(query);
         }
     }
 }

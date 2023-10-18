@@ -71,9 +71,6 @@ public class BrowserDriver : IDisposable
     public BrowserDriver(TestConfiguration testConfig, string browserType, ChromeOptions? chromeOptions = null)
     {
         _testConfig = testConfig;
-
-
-
         var testRunType = Enum.Parse<TestRunType>(testConfig.GetSetting("TestRunType"), ignoreCase: true);
 
         if (testRunType == TestRunType.Local)

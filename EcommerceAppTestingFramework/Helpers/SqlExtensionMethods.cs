@@ -103,7 +103,6 @@ namespace EcommerceAppTestingFramework.Helpers
             }
         }
 
-
         public static void VerifyCellDataWithWhereClause(this SqlConnection connection, string tableName, 
             string columnName, string whereClause, object expectedData, bool convertData = false)
         {
@@ -171,7 +170,6 @@ namespace EcommerceAppTestingFramework.Helpers
             }
         }
 
-
         public static void DeleteRow(this SqlConnection connection, string tableName, string columnName, object cellData)
         {
             if (connection.State != ConnectionState.Open)
@@ -204,8 +202,6 @@ namespace EcommerceAppTestingFramework.Helpers
                 Assert.True(rowsDeleted > 0, "No rows were deleted");
             }
         }
-
-
 
         private static SqlCommand CreateCommand(SqlConnection connection, string query)
         {
@@ -337,7 +333,5 @@ namespace EcommerceAppTestingFramework.Helpers
                 }
             }
         }
-
-
     }
 }

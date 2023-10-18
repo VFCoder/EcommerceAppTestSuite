@@ -8,7 +8,7 @@ namespace EcommerceAppTests.UITests
     [TestFixture]
     [Category("UI_CrossBrowserTests")]
     [Parallelizable(ParallelScope.Children)]
-    public class CrossBrowserTesting
+    public class CrossBrowserTests
     {
         private TestConfiguration _testConfig;
         private BrowserDriver _driver;
@@ -21,10 +21,8 @@ namespace EcommerceAppTests.UITests
 
         [OneTimeTearDown]
         public void Teardown()
-        {
-            {
-                _driver.Dispose();
-            }
+        {           
+            _driver.Dispose();           
         }
 
         [Test]
@@ -34,9 +32,8 @@ namespace EcommerceAppTests.UITests
             using var driver = new BrowserDriver(_testConfig, browserName);
             Console.WriteLine("Test browser: " + browserName);
 
-            driver.Driver.Navigate().GoToUrl("https://www.google.com");
+            driver.Driver.Navigate().GoToUrl("https://ecommercetestingapp.azurewebsites.net/");
         }
         
-
     }
 }

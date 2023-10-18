@@ -13,7 +13,7 @@ namespace EcommerceAppTests.APITests
     [TestFixture]
     [Category("ApiTests")]
     [Parallelizable]
-    public class CustomerApiTests
+    public class ApiTests
     {
         private TestConfiguration _testConfig;
         private IDriverActions _driver;
@@ -63,7 +63,7 @@ namespace EcommerceAppTests.APITests
             _request = new RestRequest("/token", Method.Post);
             _request.AddJsonBody(authRequestBody);
             _response = _apiClient.Execute(_request);
-            Assert.True(_response.IsSuccessful);
+            Assert.That(_response.IsSuccessful, Is.True, "Post request at \"/token\" was not successful");
 
             //verify status code successful:
 
@@ -82,7 +82,7 @@ namespace EcommerceAppTests.APITests
             //verify authorization:
 
             bool isAuthorizationHeaderPresent = _apiClient.DefaultParameters.Any(p => p.Name == "Authorization");
-            Assert.IsTrue(isAuthorizationHeaderPresent, "Authorization header is not present.");
+            Assert.That(isAuthorizationHeaderPresent, Is.True, "Authorization header is not present.");
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace EcommerceAppTests.APITests
 
             _request = new RestRequest("/api/customers", Method.Get);
             _response = _apiClient.Execute(_request);
-            Assert.True(_response.IsSuccessful);
+            Assert.That(_response.IsSuccessful, Is.True, "Get request at \"/api/customers\" was not successful");
 
             //verify status code successful:
 
@@ -107,12 +107,13 @@ namespace EcommerceAppTests.APITests
 
             GlobalObjects.ResponseContent = _response.Content;
             JObject jsonObject = JObject.Parse(GlobalObjects.ResponseContent);
+
             string propertyPath = "customers[1].billing_address.first_name";
             string expectedValue = "Steve";
 
             ApiExtensionMethods.ValidateJsonProperty(jsonObject, propertyPath, expectedValue);
 
-            //view response body:
+            //view response body in console:
 
             ApiExtensionMethods.PrintApiResponse(GlobalObjects.ResponseContent);
 
@@ -131,7 +132,7 @@ namespace EcommerceAppTests.APITests
 
             _request = new RestRequest($"/api/customers/{id}", Method.Get);
             _response = _apiClient.Execute(_request);
-            Assert.True(_response.IsSuccessful);
+            Assert.That(_response.IsSuccessful, Is.True, "Get request at \"/api/customers/{id}\" was not successful");
 
             //verify status code successful:
 
@@ -142,6 +143,7 @@ namespace EcommerceAppTests.APITests
 
             GlobalObjects.ResponseContent = _response.Content;
             JObject jsonObject = JObject.Parse(GlobalObjects.ResponseContent);
+
             string propertyPath = "customers[0].id";
             string expectedValue = id.ToString();
 
@@ -160,14 +162,14 @@ namespace EcommerceAppTests.APITests
 
             GetAPIAccessToken();
 
-            //enter parameter customer property to search and send get request to /api/customers/search endpoint:
+            //enter 'Query' search parameter and send get request to 'customers/search' endpoint:
 
             string username = "Jake@email.com";
 
             _request = new RestRequest("/api/customers/search", Method.Get);
             _request.AddQueryParameter("Query", $"username: {username}");
             _response = _apiClient.Execute(_request);
-            Assert.True(_response.IsSuccessful);
+            Assert.That(_response.IsSuccessful, Is.True, "Get request at \"/api/customers/search\" was not successful");
 
             //verify status code successful:
 
@@ -197,7 +199,7 @@ namespace EcommerceAppTests.APITests
 
             GetAPIAccessToken();
 
-            //enter json body with customer details and send post request to /api/customers endpoint:
+            //enter json body with customer details and send post request to 'customers' endpoint:
 
             var createCustomerRequestBody = @"
             {
@@ -216,7 +218,7 @@ namespace EcommerceAppTests.APITests
             _request = new RestRequest("/api/customers", Method.Post);
             _request.AddJsonBody(createCustomerRequestBody);
             _response = _apiClient.Execute(_request);
-            Assert.True(_response.IsSuccessful);
+            Assert.That(_response.IsSuccessful, Is.True, "Post request at \"/api/customers\" was not successful");
 
             //verify status code successful:
 
@@ -239,15 +241,15 @@ namespace EcommerceAppTests.APITests
 
         }
 
-        public int GetCustomerId(string property, string value)
+        private int GetCustomerId(string property, string value)
         {
 
-            //search for customer based on property/value arguments:
+            //search for customer based on property/value:
 
             _request = new RestRequest("/api/customers/search", Method.Get);
             _request.AddQueryParameter("Query", $"{property}: {value}");
             _response = _apiClient.Execute(_request);
-            Assert.True(_response.IsSuccessful);
+            Assert.That(_response.IsSuccessful, Is.True, "Get request at \"/api/customers/search\" was not successful");
 
             //verify status code successful:
 
@@ -290,7 +292,7 @@ namespace EcommerceAppTests.APITests
 
             _request = new RestRequest($"/api/customers/{id}", Method.Delete);
             _response = _apiClient.Execute(_request);
-            Assert.True(_response.IsSuccessful);
+            Assert.That(_response.IsSuccessful, Is.True, "Delete request at \"/api/customers/{id}\" was not successful");
 
             //verify status code successful:
 
@@ -301,9 +303,11 @@ namespace EcommerceAppTests.APITests
 
             _request = new RestRequest($"/api/customers/{id}", Method.Get);
             _response = _apiClient.Execute(_request);
-            Assert.True(_response.IsSuccessful);
+            Assert.That(_response.IsSuccessful, Is.True, "Get request at \"/api/customers/{id}\" was not successful");
+
             GlobalObjects.ResponseContent = _response.Content;
             JObject jsonObject = JObject.Parse(GlobalObjects.ResponseContent);
+
             string propertyPath = "customers[0].deleted";
             string expectedValue = "True";
 
