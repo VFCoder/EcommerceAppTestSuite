@@ -19,7 +19,7 @@ namespace EcommerceAppTests.UITests
     [TestFixture]
     [Category("UI_SmokeTests")]
     [Parallelizable]
-    public class CustomerAppSmokeTest
+    public class CustomerAppSmokeTest : TestBase
     {
         private TestConfiguration _testConfig;
         private IDriverActions _driver;

@@ -19,7 +19,7 @@ namespace EcommerceAppTests.UITests
     [TestFixture]
     [Category("UI_EndToEndTests")]
     [Parallelizable]
-    public class EndToEndTests
+    public class EndToEndTests : TestBase
     {
         private TestConfiguration _testConfig;
         private IDriverActions _driver;
@@ -57,8 +57,8 @@ namespace EcommerceAppTests.UITests
         [TearDown]
         public void Teardown()
         {
-            _driver.Dispose();
-        }
+/*            _driver.Dispose();
+*/        }
 
 
         [Test]

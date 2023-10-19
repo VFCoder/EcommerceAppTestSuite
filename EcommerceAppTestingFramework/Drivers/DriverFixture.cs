@@ -15,19 +15,23 @@ using System.Collections.ObjectModel;
 using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium.Interactions;
 using EcommerceAppTestingFramework.Configuration;
+//using EcommerceAppTestingFramework.Reports;
 
 namespace EcommerceAppTestingFramework.Drivers
 {
-    public class DriverFixture : IWebDriver, IDriverActions
+    public class DriverFixture : IWebDriver, IDriverActions, ITakesScreenshot
     {
         private IWebDriver Driver { get; set; }
         public WebDriverWait DriverWait { get; }
 
         private TestConfiguration _testConfig;
 
-        public DriverFixture(TestConfiguration testConfig, ChromeOptions? chromeOptions = null, BrowserType? browserType = null)
+        public DriverFixture(TestConfiguration testConfig, ChromeOptions? chromeOptions = null)
         {
-            var testRunType = Enum.Parse<TestRunType>(testConfig.GetSetting("TestRunType"), ignoreCase: true);
+            _testConfig = testConfig;
+
+            var testRunType = Enum.Parse<TestRunType>(_testConfig.GetSetting("TestRunType"), ignoreCase: true);
+            var browserType = Enum.Parse<BrowserType>(_testConfig.GetSetting("BrowserType"), ignoreCase: true);
 
             if (testRunType == TestRunType.Local)
             {
@@ -37,13 +41,13 @@ namespace EcommerceAppTestingFramework.Drivers
                 }
                 else
                 {
-                    Driver = GetWebDriver(browserType ?? BrowserType.Chrome);
+                    Driver = GetWebDriver(browserType);
                 }
             }
             else if (testRunType == TestRunType.Grid)
             {
                 var gridUrl = testConfig.GetSetting("GridUrl");
-                Driver = GetRemoteWebDriver(browserType ?? BrowserType.Chrome, gridUrl);
+                Driver = GetRemoteWebDriver(browserType, gridUrl);
             }
             else
             {
@@ -103,12 +107,14 @@ namespace EcommerceAppTestingFramework.Drivers
         {
             string baseUrl = _testConfig.GetBaseUrl();
             Driver.Navigate().GoToUrl(baseUrl);
+
         }
 
         public void NavigateToAdminURL()
         {
             string adminUrl = _testConfig.GetAdminUrl();
             Driver.Navigate().GoToUrl(adminUrl);
+
         }
 
         public void NavigateToApiURL(string endpoint = "")
@@ -225,12 +231,27 @@ namespace EcommerceAppTestingFramework.Drivers
                 throw new NoSuchElementException($"No option containing '{partialText}' found in the dropdown.");
             }
         }
+        /*        public string GetScreenshot()
+                {
+                    var file = ((ITakesScreenshot)Driver).GetScreenshot();
+                    var img = file.AsBase64EncodedString;
 
+                    return img;
+                }*/
+
+        public Screenshot GetScreenshot()
+        {
+            ITakesScreenshot screenshotDriver = Driver as ITakesScreenshot;
+            if (screenshotDriver != null)
+            {
+                return screenshotDriver.GetScreenshot();
+            }
+            return null;
+        }
 
         public void Dispose()
         {
             Quit();
-
         }
 
 

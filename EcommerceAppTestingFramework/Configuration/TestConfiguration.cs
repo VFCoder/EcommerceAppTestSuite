@@ -51,7 +51,6 @@ namespace EcommerceAppTestingFramework.Configuration
             }
         }
 
-
         public class TestSettings
         {
             public Dictionary<string, bool> CrossBrowserTypes { get; set; }

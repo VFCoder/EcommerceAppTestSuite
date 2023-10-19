@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceAppTestingFramework", "EcommerceAppTestingFramework\EcommerceAppTestingFramework.csproj", "{DAF60287-CA70-498F-8340-5DFE89B8C63F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceAppTestingFramework", "EcommerceAppTestingFramework\EcommerceAppTestingFramework.csproj", "{DAF60287-CA70-498F-8340-5DFE89B8C63F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceAppTests", "EcommerceAppTests\EcommerceAppTests.csproj", "{7CE91026-96F2-4FFF-9B0F-032B20D3A878}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceAppTests", "EcommerceAppTests\EcommerceAppTests.csproj", "{7CE91026-96F2-4FFF-9B0F-032B20D3A878}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

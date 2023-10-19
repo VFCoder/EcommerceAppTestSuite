@@ -13,91 +13,64 @@ using static EcommerceAppTestingFramework.Pages.CartPage;
 using static EcommerceAppTestingFramework.Pages.CheckoutPage;
 using static EcommerceAppTestingFramework.Pages.RegisterPage;
 using static EcommerceAppTestingFramework.Pages.UserDataAndOrderVerifier;
+using EcommerceAppTestingFramework.Reports;
 
 namespace EcommerceAppTests.UITests
 {
     [TestFixture]
     [Category("UI_FunctionalTests")]
     [Parallelizable]
-    public class CustomerAppFunctionalTest
+    public class CustomerAppFunctionalTest : TestBase
     {
-        private TestConfiguration _testConfig;
-        private IDriverActions _driver;
-        private BasePage _basePage;
-        private HomePage _homePage;
-        private LoginPage _loginPage;
-        private RegisterPage _registerPage;
-        private ProductPage _productPage;
-        private SearchPage _searchPage;
-        private UserDataAndOrderVerifier _verifier;
-        private CartPage _cartPage;
-        private CheckoutPage _checkoutPage;
-        private OrderDetailsPage _orderDetailsPage;
-
-
-        [SetUp]
-        public void Setup()
-        {
-
-            _testConfig = new TestConfiguration();
-            _driver = new DriverFixture(_testConfig);
-            _basePage = new BasePage(_driver);
-            _homePage = new HomePage(_driver);
-            _registerPage = new RegisterPage(_driver);
-            _loginPage = new LoginPage(_driver);
-            _productPage = new ProductPage(_driver);
-            _searchPage = new SearchPage(_driver);
-            _verifier = new UserDataAndOrderVerifier(_driver);
-            _cartPage = new CartPage(_driver);
-            _checkoutPage = new CheckoutPage(_driver);
-            _orderDetailsPage = new OrderDetailsPage(_driver);
-
-
-        }
-
-        [TearDown]
-        public void Teardown()
-        {
-            _driver.Dispose();
-        }
 
         [Test]
         public void RegisterNewCustomerTest()
         {
+            _extentReporting.LogInfo("Starting test - RegisterNewCustomerTest");
+
             _driver.NavigateToBaseURL();
             Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
+            _extentReporting.LogInfo("Navigated to base url");
+
 
             _basePage.ClickRegisterLink();
             Assert.That(_basePage.PageLoaded(_registerPage.pageTitle), Is.True, "Register page did not load correctly.");
+            _extentReporting.LogInfo("Clicked register link");
 
             _registerPage.SelectGender(Gender.Female);
-            _registerPage.EnterFirstName("Mary");
-            _registerPage.EnterLastName("Hicks");
-            _registerPage.SelectBirthDateDay("13");
-            _registerPage.SelectBirthDateMonth("June");
-            _registerPage.SelectBirthDateYear("1995");
-            _registerPage.EnterEmail("MaryHicks123@email.com");
+            _registerPage.EnterFirstName("Janice");
+            _registerPage.EnterLastName("Smith");
+            _registerPage.SelectBirthDateDay("15");
+            _registerPage.SelectBirthDateMonth("February");
+            _registerPage.SelectBirthDateYear("1977");
+            _registerPage.EnterEmail("Janice@email.com");
             _registerPage.EnterCompany("");
             _registerPage.EnterPassword("UserPassword123");
             _registerPage.EnterConfirmPassword("UserPassword123");
             _registerPage.ClickRegisterButton();
             Assert.That(_registerPage.IsRegistrationCompleted(), Is.True, "Registration completed message was not displayed correctly.");
+            _extentReporting.LogInfo("Register form filled and submitted");
 
         }
 
         [Test]
         public void LoginCustomerTest()
         {
+            _extentReporting.LogInfo("Starting test - LoginCustomerTest");
+
             _driver.NavigateToBaseURL();
             Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
+            _extentReporting.LogInfo("Navigated to base url");
 
             _basePage.ClickLoginLink();
             Assert.That(_basePage.PageLoaded(_loginPage.pageTitle), Is.True, "Login page did not load correctly.");
+            _extentReporting.LogInfo("Clicked login link");
 
             _loginPage.EnterLoginEmail("MaryHicks123@email.com");
             _loginPage.EnterLoginPassword("UserPassword123");
             _loginPage.ClickLoginBtn();
             Assert.That(_basePage.IsLogoutLinkDisplayed, Is.True, "Login was not successful.");
+            _extentReporting.LogInfo("Submitted login credentials and logged in.");
 
         }
 

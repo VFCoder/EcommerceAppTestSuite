@@ -22,7 +22,7 @@ namespace EcommerceAppTestingFramework.Drivers
         void WaitForLoad(int? timeoutInSeconds = null);
         //void HoverSelectWait(IWebElement hoverElement, IWebElement clickElement, int? timeoutInSeconds = null);
         void Dispose();
-
+        Screenshot GetScreenshot();
         bool WaitForPageLoad(int? timeoutInSeconds = null);
         bool WaitForElementToBeVisible(IWebElement element, int? timeoutInSeconds = null);
         bool WaitForText(IWebElement element, string expectedText, int? timeoutInSeconds = null);
