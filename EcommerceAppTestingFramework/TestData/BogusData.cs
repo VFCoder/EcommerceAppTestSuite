@@ -12,6 +12,7 @@ namespace EcommerceAppTestingFramework.TestData
         #region Valid Data
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+        public string? FullName { get; set; }
         public string? Email { get; set; }
         public string? Password { get; set; }
         public string? DOBDay { get; set; }
@@ -20,6 +21,7 @@ namespace EcommerceAppTestingFramework.TestData
         public string? Company { get; set; }
         public string? Country { get; set; }
         public string? Street { get; set; }
+        public string? StateAbbr { get; set; }
         public string? State { get; set; }
         public string? City { get; set; }
         public string? Zip { get; set; }

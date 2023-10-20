@@ -19,6 +19,7 @@ using AventStack.ExtentReports;
 using AventStack.ExtentReports.Reporter;
 using System.Reflection;
 using EcommerceAppTestingFramework.Reports;
+using EcommerceAppTestingFramework.TestData;
 
 namespace EcommerceAppTests.UITests
 {
@@ -27,6 +28,8 @@ namespace EcommerceAppTests.UITests
         protected TestConfiguration _testConfig;
         protected IDriverActions _driver;
         protected ExtentReporting _extentReporting;
+        protected DataGenerator _dataGenerator;
+        protected BogusData _bogusData;
         protected BasePage _basePage;
         protected HomePage _homePage;
         protected LoginPage _loginPage;
@@ -44,6 +47,8 @@ namespace EcommerceAppTests.UITests
             _testConfig = new TestConfiguration();
             _driver = new DriverFixture(_testConfig);
             _extentReporting = new ExtentReporting(_driver);
+            _dataGenerator = new DataGenerator();
+            _bogusData = _dataGenerator.GenerateData();
             _basePage = new BasePage(_driver);
             _homePage = new HomePage(_driver);
             _registerPage = new RegisterPage(_driver);

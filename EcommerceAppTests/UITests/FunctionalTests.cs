@@ -14,6 +14,7 @@ using static EcommerceAppTestingFramework.Pages.CheckoutPage;
 using static EcommerceAppTestingFramework.Pages.RegisterPage;
 using static EcommerceAppTestingFramework.Pages.UserDataAndOrderVerifier;
 using EcommerceAppTestingFramework.Reports;
+using EcommerceAppTestingFramework.TestData;
 
 namespace EcommerceAppTests.UITests
 {
@@ -37,16 +38,16 @@ namespace EcommerceAppTests.UITests
             Assert.That(_basePage.PageLoaded(_registerPage.pageTitle), Is.True, "Register page did not load correctly.");
             _extentReporting.LogInfo("Clicked register link");
 
-            _registerPage.SelectGender(Gender.Female);
-            _registerPage.EnterFirstName("Janice");
-            _registerPage.EnterLastName("Smith");
-            _registerPage.SelectBirthDateDay("15");
-            _registerPage.SelectBirthDateMonth("February");
-            _registerPage.SelectBirthDateYear("1977");
-            _registerPage.EnterEmail("Janice@email.com");
-            _registerPage.EnterCompany("");
-            _registerPage.EnterPassword("UserPassword123");
-            _registerPage.EnterConfirmPassword("UserPassword123");
+            _registerPage.SelectGender(Gender.Male);
+            _registerPage.EnterFirstName(_bogusData.FirstName);
+            _registerPage.EnterLastName(_bogusData.LastName);
+            _registerPage.SelectBirthDateDay(_bogusData.DOBDay);
+            _registerPage.SelectBirthDateMonth(_bogusData.DOBMonth);
+            _registerPage.SelectBirthDateYear(_bogusData.DOBYear);
+            _registerPage.EnterEmail(_bogusData.Email);
+            _registerPage.EnterCompany(_bogusData.Company);
+            _registerPage.EnterPassword(ValidUserData.Password);
+            _registerPage.EnterConfirmPassword(ValidUserData.Password);
             _registerPage.ClickRegisterButton();
             Assert.That(_registerPage.IsRegistrationCompleted(), Is.True, "Registration completed message was not displayed correctly.");
             _extentReporting.LogInfo("Register form filled and submitted");
@@ -66,8 +67,8 @@ namespace EcommerceAppTests.UITests
             Assert.That(_basePage.PageLoaded(_loginPage.pageTitle), Is.True, "Login page did not load correctly.");
             _extentReporting.LogInfo("Clicked login link");
 
-            _loginPage.EnterLoginEmail("MaryHicks123@email.com");
-            _loginPage.EnterLoginPassword("UserPassword123");
+            _loginPage.EnterLoginEmail(ValidUserData.Email);
+            _loginPage.EnterLoginPassword(ValidUserData.Password);
             _loginPage.ClickLoginBtn();
             Assert.That(_basePage.IsLogoutLinkDisplayed, Is.True, "Login was not successful.");
             _extentReporting.LogInfo("Submitted login credentials and logged in.");
@@ -83,8 +84,8 @@ namespace EcommerceAppTests.UITests
             _basePage.ClickLoginLink();
             Assert.That(_basePage.PageLoaded(_loginPage.pageTitle), Is.True, "Login page did not load correctly.");
 
-            _loginPage.EnterLoginEmail("MaryHicks123@email.com");
-            _loginPage.EnterLoginPassword("UserPassword123");
+            _loginPage.EnterLoginEmail(ValidUserData.Email);
+            _loginPage.EnterLoginPassword(ValidUserData.Password);
             _loginPage.ClickLoginBtn();
             Assert.That(_basePage.IsLogoutLinkDisplayed, Is.True, "Login was not successful.");
 

@@ -49,7 +49,7 @@ namespace EcommerceAppTestingFramework.Reports
             }
             else if (testStatus == TestStatus.Passed)
             {
-                LogPass($"Test passed man");
+                LogPass($"Test passed");
             }
 
             LogScreenshot("Ending test", GetScreenshot());

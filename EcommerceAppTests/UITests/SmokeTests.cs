@@ -13,6 +13,7 @@ using static EcommerceAppTestingFramework.Pages.CartPage;
 using static EcommerceAppTestingFramework.Pages.CheckoutPage;
 using static EcommerceAppTestingFramework.Pages.RegisterPage;
 using static EcommerceAppTestingFramework.Pages.UserDataAndOrderVerifier;
+using EcommerceAppTestingFramework.TestData;
 
 namespace EcommerceAppTests.UITests
 {
@@ -21,97 +22,59 @@ namespace EcommerceAppTests.UITests
     [Parallelizable]
     public class CustomerAppSmokeTest : TestBase
     {
-        private TestConfiguration _testConfig;
-        private IDriverActions _driver;
-        private BasePage _basePage;
-        private HomePage _homePage;
-        private LoginPage _loginPage;
-        private RegisterPage _registerPage;
-        private ProductPage _productPage;
-        private SearchPage _searchPage;
-        private UserDataAndOrderVerifier _verifier;
-        private CartPage _cartPage;
-        private CheckoutPage _checkoutPage;
-        private OrderDetailsPage _orderDetailsPage;
-        private string _baseUrl;
-        private string _adminUrl;
-        private string _apiUrl;
-        private string _sqlConnection;
-        private BrowserType _browserType;
-
-        [SetUp]
-        public void Setup()
-        {
-
-            _testConfig = new TestConfiguration();
-            _driver = new DriverFixture(_testConfig);
-            _basePage = new BasePage(_driver);
-            _homePage = new HomePage(_driver);
-            _registerPage = new RegisterPage(_driver);
-            _loginPage = new LoginPage(_driver);
-            _productPage = new ProductPage(_driver);
-            _searchPage = new SearchPage(_driver);
-            _verifier = new UserDataAndOrderVerifier(_driver);
-            _cartPage = new CartPage(_driver);
-            _checkoutPage = new CheckoutPage(_driver);
-            _orderDetailsPage = new OrderDetailsPage(_driver);
-            _baseUrl = _testConfig.GetBaseUrl();
-            _adminUrl = _testConfig.GetAdminUrl();
-            _apiUrl = _testConfig.GetApiUrl();
-            _sqlConnection = _testConfig.GetSqlConnection();
-
-        }
-
-        [TearDown]
-        public void Teardown()
-        {
-            _driver.Dispose();
-        }
-
 
         [Test]
         public void TestBasicAppFunctionalities()
-        {                        
-            string customerEmail = "Jake@email.com";
-            string customerPassword = "UserPassword123";
+        {
+            _extentReporting.LogInfo("Starting smoke test - TestBasicAppFunctionalities");
+
 
             //Navigate to home page and confirm navigation links/menus are loaded:
 
             _driver.NavigateToBaseURL();
             Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
+            _extentReporting.LogInfo("Navigated to base url");
+
 
             //Register new customer:
 
             _basePage.ClickRegisterLink();
             Assert.That(_basePage.PageLoaded(_registerPage.pageTitle), Is.True, "Register page did not load correctly.");
+            _extentReporting.LogInfo("Navigated to register page");
 
-            _registerPage.SelectGender(Gender.Female);
-            _registerPage.EnterFirstName("Jake");
-            _registerPage.EnterLastName("Nime");
-            _registerPage.SelectBirthDateDay("21");
-            _registerPage.SelectBirthDateMonth("February");
-            _registerPage.SelectBirthDateYear("1995");
-            _registerPage.EnterEmail(customerEmail);
-            _registerPage.EnterCompany("");
-            _registerPage.EnterPassword(customerPassword);
-            _registerPage.EnterConfirmPassword(customerPassword);
+
+            _registerPage.SelectGender(Gender.Male);
+            _registerPage.EnterFirstName(_bogusData.FirstName);
+            _registerPage.EnterLastName(_bogusData.LastName);
+            _registerPage.SelectBirthDateDay(_bogusData.DOBDay);
+            _registerPage.SelectBirthDateMonth(_bogusData.DOBMonth);
+            _registerPage.SelectBirthDateYear(_bogusData.DOBYear);
+            _registerPage.EnterEmail(_bogusData.Email);
+            _registerPage.EnterCompany(_bogusData.Company);
+            _registerPage.EnterPassword(ValidUserData.Password);
+            _registerPage.EnterConfirmPassword(ValidUserData.Password);
             _registerPage.ClickRegisterButton();
             Assert.That(_registerPage.IsRegistrationCompleted(), Is.True, "Registration completed message was not displayed correctly.");
+            _extentReporting.LogInfo($"Submitted registration form for customer {_bogusData.FullName}");
 
             //Log out customer:
 
             Assert.That(_basePage.IsLogoutLinkDisplayed, Is.True, "Logout link not displayed.");
             _basePage.ClickLogoutLink();
             Assert.That(_basePage.IsLoginLinkDisplayed, Is.True, "Logout was not successful.");
+            _extentReporting.LogInfo("Logged out");
+
 
             //Log in customer:
             _basePage.ClickLoginLink();
             Assert.That(_basePage.PageLoaded(_loginPage.pageTitle), Is.True, "Login page did not load correctly.");
 
-            _loginPage.EnterLoginEmail(customerEmail);
-            _loginPage.EnterLoginPassword(customerPassword);
+
+            _loginPage.EnterLoginEmail(_bogusData.Email);
+            _loginPage.EnterLoginPassword(ValidUserData.Password);
             _loginPage.ClickLoginBtn();
             Assert.That(_basePage.IsLogoutLinkDisplayed, Is.True, "Logout link not displayed.");
+            _extentReporting.LogInfo("Logged back in");
 
             //Perform product search and confirm product is returned:
 
@@ -121,12 +84,16 @@ namespace EcommerceAppTests.UITests
             _basePage.ClickSearchButton();
             Assert.That(_basePage.PageLoaded(_searchPage.pageTitle), Is.True, "Search page did not load correctly.");
             Assert.That(_productPage.GetProductCount(), Is.GreaterThan(0), "No products returned from search");
+            _extentReporting.LogInfo($"Performed product search for '{searchText}'");
+
 
             //Confirm product listing page:
 
             _basePage.SelectCategoryLink(Category.CellPhones);
             Assert.That(_basePage.PageLoaded(ProductPageTitle.CellPhones), Is.True, "Desktops page did not load correctly");
             Assert.That(_productPage.GetProductCount(), Is.GreaterThan(0), "No products displayed on product page");
+            _extentReporting.LogInfo($"Selected product category '{Category.CellPhones}' and navigated to product listing page");
+
 
             //Confirm product details of first product listed:
 
@@ -134,12 +101,16 @@ namespace EcommerceAppTests.UITests
 
             _productPage.ClickProductDetailsByListingOrder(1);
             Assert.That(_basePage.PageLoaded(productName), Is.True, "Product details page did not load correctly.");
+            _extentReporting.LogInfo($"Navigated to product details page for '{productName}'");
+
 
             //Add product to cart:
 
             _productPage.AddProductToCartFromDetailsPage();
             Assert.That(_productPage.NotificationSuccessDisplayed(), Is.True, "Product added notification did not display");
             _productPage.CloseNotificationBar();
+            _extentReporting.LogInfo("Added product to cart");
+
 
             //Confirm product is in cart and total price:
 
@@ -153,41 +124,52 @@ namespace EcommerceAppTests.UITests
 
             string cartTotalPrice = _verifier.GetTotalPrice();
 
+            _extentReporting.LogInfo($"Confirmed product {productName} is in cart with price '{cartTotalPrice}'");
+
             //Check out:
 
             _cartPage.ClickTermsOfService();
             _cartPage.ClickCheckoutButton();
             Assert.That(_basePage.PageLoaded(_checkoutPage.pageTitle), Is.True, "Checkout page did not load");
+            _extentReporting.LogInfo($"Navigated to check out");
+
 
             //Complete address details:
 
-            _checkoutPage.SelectBillingAddressCountryDropdown("United States of America");
-            _checkoutPage.SelectBillingAddressStateDropdown("Florida");
-            _checkoutPage.EnterBillingAddressCity("Tampa");
-            _checkoutPage.EnterBillingAddressStreet("123 Tampa Ave");
-            _checkoutPage.EnterBillingAddressZip("12345");
-            _checkoutPage.EnterBillingAddressPhone("1234567890");
+            _checkoutPage.SelectBillingAddressCountryDropdown(ValidUserData.Country);
+            _checkoutPage.SelectBillingAddressStateDropdown(_bogusData.State);
+            _checkoutPage.EnterBillingAddressCity(_bogusData.City);
+            _checkoutPage.EnterBillingAddressStreet(_bogusData.Street);
+            _checkoutPage.EnterBillingAddressZip(_bogusData.Zip);
+            _checkoutPage.EnterBillingAddressPhone(_bogusData.PhoneNumber);
             _checkoutPage.ClickContinueFromBillingAddress();
+            _extentReporting.LogInfo("Completed address details");
 
             //Choose shipping method:
 
             _checkoutPage.SelectShippingMethod(ShippingMethod.NextDayAir);
             _checkoutPage.ClickContinueFromShippingMethod();
+            _extentReporting.LogInfo($"Selected shipping method");
+
 
             //Choose payment method:
 
             _checkoutPage.SelectPaymentMethod(PaymentMethod.CreditCard);
             _checkoutPage.ClickContinueFromPaymentMethod();
+            _extentReporting.LogInfo($"Selected payment method");
+
 
             //Enter credit card details:
 
             _checkoutPage.SelectCreditCartType(CreditCardType.MasterCard);
-            _checkoutPage.InputCardHolderName("Joe Bidson");
-            _checkoutPage.InputCardNumber("1111222233334444");
-            _checkoutPage.SelectExpireMonth("04");
-            _checkoutPage.SelectExpireYear("2030");
-            _checkoutPage.InputCardCode("123");
+            _checkoutPage.InputCardHolderName(_bogusData.FullName);
+            _checkoutPage.InputCardNumber(_bogusData.CardNumber);
+            _checkoutPage.SelectExpireMonth(_bogusData.ExpMonth);
+            _checkoutPage.SelectExpireYear(_bogusData.ExpYear);
+            _checkoutPage.InputCardCode(_bogusData.CVC);
             _checkoutPage.ClickContinueFromPaymentInfo();
+            _extentReporting.LogInfo($"Entered credit card details");
+
 
             //Verify correct product and total price:
 
@@ -197,11 +179,14 @@ namespace EcommerceAppTests.UITests
             string checkoutTotalPrice = _verifier.GetTotalPrice();
 
             Assert.That(cartTotalPrice, Is.EqualTo(checkoutTotalPrice), "Total price does not match");
+            _extentReporting.LogInfo($"Confirmed product {productName} and price {cartTotalPrice}");
+
 
             //Place order:
 
             _checkoutPage.ClickConfirmOrderBtn();
             Assert.That(_checkoutPage.IsConfirmOrderMessageDisplayed(), Is.True, "Confirm order message not displayed");
+            _extentReporting.LogInfo($"Placed order");
 
             //Confirm order number:
 
@@ -213,6 +198,7 @@ namespace EcommerceAppTests.UITests
             string orderNumberOrderDetails = _orderDetailsPage.GetOrderNumber();
 
             Assert.That(orderNumberCheckout, Is.EqualTo(orderNumberOrderDetails), "Order numbers do not match");
+            _extentReporting.LogInfo($"Confirmed order number {orderNumberCheckout}");
 
         }
     }

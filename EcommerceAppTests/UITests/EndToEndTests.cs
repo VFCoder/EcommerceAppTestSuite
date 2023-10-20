@@ -13,6 +13,7 @@ using static EcommerceAppTestingFramework.Pages.CartPage;
 using static EcommerceAppTestingFramework.Pages.CheckoutPage;
 using static EcommerceAppTestingFramework.Pages.RegisterPage;
 using static EcommerceAppTestingFramework.Pages.UserDataAndOrderVerifier;
+using EcommerceAppTestingFramework.TestData;
 
 namespace EcommerceAppTests.UITests
 {
@@ -21,61 +22,28 @@ namespace EcommerceAppTests.UITests
     [Parallelizable]
     public class EndToEndTests : TestBase
     {
-        private TestConfiguration _testConfig;
-        private IDriverActions _driver;
-        private BasePage _basePage;
-        private HomePage _homePage;
-        private LoginPage _loginPage;
-        private RegisterPage _registerPage;
-        private ProductPage _productPage;
-        private SearchPage _searchPage;
-        private UserDataAndOrderVerifier _verifier;
-        private CartPage _cartPage;
-        private CheckoutPage _checkoutPage;
-        private OrderDetailsPage _orderDetailsPage;
-
-
-        [SetUp]
-        public void Setup()
-        {
-
-            _testConfig = new TestConfiguration();
-            _driver = new DriverFixture(_testConfig);
-            _basePage = new BasePage(_driver);
-            _homePage = new HomePage(_driver);
-            _registerPage = new RegisterPage(_driver);
-            _loginPage = new LoginPage(_driver);
-            _productPage = new ProductPage(_driver);
-            _searchPage = new SearchPage(_driver);
-            _verifier = new UserDataAndOrderVerifier(_driver);
-            _cartPage = new CartPage(_driver);
-            _checkoutPage = new CheckoutPage(_driver);
-            _orderDetailsPage = new OrderDetailsPage(_driver);
-
-        }
-
-        [TearDown]
-        public void Teardown()
-        {
-/*            _driver.Dispose();
-*/        }
-
 
         [Test]
         public void TestBasicAppFunctionalitiesEndToEnd()
         {
-            //login:
+            _extentReporting.LogInfo("Starting End to End test - TestBasicAppFunctionalitiesEndToEnd");
+
+            //navigate to home page:
 
             _driver.NavigateToBaseURL();
             Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
+            _extentReporting.LogInfo("Navigated to base url");
+
+            //login:
 
             _basePage.ClickLoginLink();
             Assert.That(_basePage.PageLoaded(_loginPage.pageTitle), Is.True, "Login page did not load correctly.");
 
-            _loginPage.EnterLoginEmail("admin@vfcoder.com");
-            _loginPage.EnterLoginPassword("adminvfcoder");
+            _loginPage.EnterLoginEmail(ValidUserData.Email);
+            _loginPage.EnterLoginPassword(ValidUserData.Password);
             _loginPage.ClickLoginBtn();
-            Assert.That(_basePage.AdminLoggedIn(), Is.True, "Admin login failed.");
+            Assert.That(_basePage.IsLogoutLinkDisplayed, Is.True, "Login was not successful.");
+            _extentReporting.LogInfo("Submitted login credentials and logged in.");
 
             //confirm product listing page:
 
@@ -94,6 +62,7 @@ namespace EcommerceAppTests.UITests
                     Assert.That(string.IsNullOrWhiteSpace(product.ImageUrl), Is.False, "Product image URL is empty.");
                 });
             }
+            _extentReporting.LogInfo($"Selected product category '{Category.Desktops}', products displayed correctly");
 
             //confirm product details:
 
@@ -112,6 +81,7 @@ namespace EcommerceAppTests.UITests
                 Assert.That(productDetails.Price, Is.EqualTo(selectedProduct.Price), "Product Price mismatch");
                 Assert.That(productDetails.ImageUrl, Is.EqualTo(selectedProduct.ImageUrl), "Product Image URL mismatch");
             });
+            _extentReporting.LogInfo($"Navigated to product details page for product index {productIndexToAddToCart} and confirmed product details");
 
             //add product to cart and confirm cart items:
 
@@ -152,6 +122,8 @@ namespace EcommerceAppTests.UITests
                 Assert.That(productFoundInCart, Is.True, $"The product '{productDetails.Name}' with price '{selectedProduct.Price}' was not found in the cart.");
                 Assert.That(productQuantityCorrect, Is.True, $"Quantity does not match for product '{productDetails.Name}'");
             });
+            _extentReporting.LogInfo($"Confirmed product {productDetails.Name} and price {selectedProduct.Price} in cart");
+
 
             //Checkout:
 
@@ -171,12 +143,13 @@ namespace EcommerceAppTests.UITests
             _checkoutPage.ClickContinueFromPaymentMethod();
 
             _checkoutPage.SelectCreditCartType(CreditCardType.MasterCard);
-            _checkoutPage.InputCardHolderName("Bob Jones");
-            _checkoutPage.InputCardNumber("1111222233334444");
-            _checkoutPage.SelectExpireMonth("04");
-            _checkoutPage.SelectExpireYear("2030");
-            _checkoutPage.InputCardCode("123");
+            _checkoutPage.InputCardHolderName(ValidUserData.FullName);
+            _checkoutPage.InputCardNumber(_bogusData.CardNumber);
+            _checkoutPage.SelectExpireMonth(_bogusData.ExpMonth);
+            _checkoutPage.SelectExpireYear(_bogusData.ExpYear);
+            _checkoutPage.InputCardCode(_bogusData.CVC);
             _checkoutPage.ClickContinueFromPaymentInfo();
+            _extentReporting.LogInfo($"Checked out and submitted shipping and payment details");
 
             //verify checkout order details:
 
@@ -192,6 +165,7 @@ namespace EcommerceAppTests.UITests
                 Assert.That(billingAddressText, Is.EqualTo(shippingAddressText), "Selected payment method is not in billing address");
 
             });
+            _extentReporting.LogInfo($"Confirmed address details");
 
             var checkoutVerifier = new UserDataAndOrderVerifier(_driver);
             List<ProductTable> checkoutItems = checkoutVerifier.GetProductTableItems();
@@ -205,6 +179,7 @@ namespace EcommerceAppTests.UITests
                 Assert.That(actual.Quantity, Is.EqualTo(expected.Quantity), $"Quantity for item {index} does not match.");
                 Assert.That(actual.TotalPrice, Is.EqualTo(expected.TotalPrice), $"Total Price for item {index} does not match.");
             });
+            _extentReporting.LogInfo($"Confirmed product details");
 
             PriceInfoBox checkoutPriceInfo = _verifier.GetPriceInfo();
             _verifier.PrintPriceInfo();
@@ -217,20 +192,23 @@ namespace EcommerceAppTests.UITests
                 Assert.That(actual.Total, Is.EqualTo(expected.Total), $"Total does not match for item {index}.");
                 Assert.That(actual.Points, Is.EqualTo(expected.Points), $"Points do not match for item {index}.");
             });
+            _extentReporting.LogInfo($"Confirmed price details");
 
             //submit order and confirm order number:
 
             _checkoutPage.ClickConfirmOrderBtn();
             Assert.That(_checkoutPage.IsConfirmOrderMessageDisplayed(), Is.True, "Confirm order message not displayed");
+            _extentReporting.LogInfo($"Placed ordrer");
 
             string orderNumberCheckout = _checkoutPage.GetOrderNumber();
 
             _checkoutPage.ClickOrderDetailsLink();
-
             Assert.That(_basePage.PageLoaded(_orderDetailsPage.pageTitle), Is.True, "Order Details page did not load");
+            _extentReporting.LogInfo($"Navigated to order details page");
 
             string orderNumberOrderDetails = _orderDetailsPage.GetOrderNumber();
             Assert.That(orderNumberCheckout, Is.EqualTo(orderNumberOrderDetails), "Order numbers do not match");
+            _extentReporting.LogInfo($"Confirmed order number");
 
             //verify order details after purchase:
 
@@ -245,6 +223,7 @@ namespace EcommerceAppTests.UITests
                 Assert.That(actual.Quantity, Is.EqualTo(expected.Quantity), $"Quantity for item {index} does not match.");
                 Assert.That(actual.TotalPrice, Is.EqualTo(expected.TotalPrice), $"Total Price for item {index} does not match.");
             });
+            _extentReporting.LogInfo($"Confirmed product details");
 
             PriceInfoBox orderDetailsPriceInfo = _verifier.GetPriceInfo();
             _verifier.PrintPriceInfo();
@@ -256,6 +235,7 @@ namespace EcommerceAppTests.UITests
                 Assert.That(actual.Tax, Is.EqualTo(expected.Tax), $"Tax does not match for item {index}.");
                 Assert.That(actual.Total, Is.EqualTo(expected.Total), $"Total does not match for item {index}.");
             });
+            _extentReporting.LogInfo($"Confirmed price details");
 
         }
 

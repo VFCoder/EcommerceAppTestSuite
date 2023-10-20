@@ -7,23 +7,17 @@ namespace EcommerceAppTests.UITests
 {
     [TestFixture]
     [Category("UI_CrossBrowserTests")]
-    [Parallelizable(ParallelScope.Children)]
-    public class CrossBrowserTests
+    [Parallelizable(ParallelScope.All)]
+    public class CrossBrowserTests 
     {
         private TestConfiguration _testConfig;
-        private BrowserDriver _driver;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Setup()
         {
             _testConfig = new TestConfiguration();
         }
 
-        [OneTimeTearDown]
-        public void Teardown()
-        {           
-            _driver.Dispose();           
-        }
 
         [Test]
         [TestCaseSource(typeof(TestConfiguration), nameof(TestConfiguration.BrowserToRun))]
