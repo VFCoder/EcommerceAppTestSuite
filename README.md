@@ -65,9 +65,9 @@ git clone https://github.com/VFCoder/EcommerceAppTestSuite.git
 ```
 
 Install the required NuGet packages by restoring the dependencies. This can be done in Visual Studio or via the command line:
-bash
-Copy code
+```bash
 dotnet restore
+```
 Now you can run the tests based on your requirements. The framework includes the following test types:
 
 UI Tests:
@@ -91,9 +91,8 @@ The test framework is structured according to the Page Object Model (POM) design
 
 ### Test Types
 NUnit: This framework uses NUnit for unit testing.
+
 SpecFlow: Some tests are implemented using SpecFlow for behavior-driven development (BDD).
-Contributing
-Feel free to contribute to this project by opening issues or creating pull requests. Your contributions are highly appreciated.
 
 ### License
 This project is open source and available under the MIT License.
