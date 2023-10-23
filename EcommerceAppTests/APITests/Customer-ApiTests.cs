@@ -241,6 +241,59 @@ namespace EcommerceAppTests.APITests
 
         }
 
+
+        [Test]
+        public void ChangeCustomerDetails()
+        {
+            //Get authorization:
+
+            GetAPIAccessToken();
+
+            int id = GetCustomerId("first_name", "Valid");
+
+            //enter json body with customer details and send put request to 'customers' endpoint:
+
+            var createCustomerRequestBody = @"
+            {
+           
+              ""customer"": {
+/*                ""first_name"": ""Valid"",
+                ""last_name"": ""Guy"",
+                ""username"": ""apiUser3@email.com"",
+                ""password"": ""UserPassword123"",
+                ""email"": ""apiUser3@email.com"",
+                ""registered_in_store_id"": 1,
+                ""role_ids"": [4],*/
+                ""password"": ""UserPassword123""
+              }
+            }";
+
+            _request = new RestRequest($"/api/customers/{id}", Method.Put);
+            _request.AddJsonBody(createCustomerRequestBody);
+            _response = _apiClient.Execute(_request);
+            Assert.That(_response.IsSuccessful, Is.True, "Put request at \"/api/customers/id\" was not successful");
+
+            //verify status code successful:
+
+            int actualStatusCode = (int)_response.StatusCode;
+            Assert.That(actualStatusCode, Is.EqualTo(200), $"Status code is not 200");
+
+            //validate properties:
+
+            GlobalObjects.ResponseContent = _response.Content;
+            JObject jsonObject = JObject.Parse(GlobalObjects.ResponseContent);
+
+            string propertyPath = "customers[0].password";
+            string expectedValue = "UserPassword123";
+
+            ApiExtensionMethods.ValidateJsonProperty(jsonObject, propertyPath, expectedValue);
+
+            //view response body:
+
+            ApiExtensionMethods.PrintApiResponse(GlobalObjects.ResponseContent);
+
+        }
+
         private int GetCustomerId(string property, string value)
         {
 

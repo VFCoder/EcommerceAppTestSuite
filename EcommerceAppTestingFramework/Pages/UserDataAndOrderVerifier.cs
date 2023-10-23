@@ -69,9 +69,7 @@ namespace EcommerceAppTestingFramework.Pages
 
                 string productName = ProductName.ElementAt(i).Text;
                 string unitPrice = UnitPrice.ElementAt(i).Text;
-                string quantity = isCartPage
-                    ? QuantityCart.ElementAt(i).GetAttribute("value")
-                    : QuantityStatic.ElementAt(i).Text;
+                string quantity = isCartPage ? QuantityCart.ElementAt(i).GetAttribute("value") : QuantityStatic.ElementAt(i).Text;
                 string totalPrice = TotalPrice.ElementAt(i).Text;
 
                 ProductTable productTableItem = new ProductTable

@@ -46,6 +46,8 @@ namespace EcommerceAppTestingFramework.Pages
         private IWebElement PageTitle => _driver.FindElementWait(By.CssSelector(".page-title"));
         private IReadOnlyCollection<IWebElement> SearchBarDropdownItems => _driver.FindElements(By.CssSelector(".ui-menu-item"));
         private IWebElement SearchBarDropdown => _driver.FindElementWait(By.Id("ui-id-1"), 2);
+        private IWebElement CloseNotificationBtn => _driver.FindElementWait(By.CssSelector(".close"));
+
 
 
         public bool PageLoaded(string pageTitle)
@@ -101,6 +103,11 @@ namespace EcommerceAppTestingFramework.Pages
         public void ClickWishlistLink()
         {
             _driver.Click(WishlistLink);
+        }
+
+        public void ClickMyAccountLink()
+        {
+            _driver.Click(MyAccountLink);
         }
 
         public void ClickCartLink()
@@ -167,6 +174,11 @@ namespace EcommerceAppTestingFramework.Pages
             };
         }
 
+        public void CloseNotificationPopup()
+        {
+            CloseNotificationBtn.Click();
+            _driver.WaitForLoad();
+        }
 
         public List<Product>? GetAllSearchDropdownItems(string search)
         {

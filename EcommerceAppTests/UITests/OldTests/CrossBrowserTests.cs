@@ -3,12 +3,12 @@ using EcommerceAppTestingFramework.Drivers;
 using NUnit.Framework;
 using System;
 
-namespace EcommerceAppTests.UITests
+namespace EcommerceAppTests.UITests.OldTests
 {
     [TestFixture]
     [Category("UI_CrossBrowserTests")]
     [Parallelizable(ParallelScope.All)]
-    public class CrossBrowserTests 
+    public class CrossBrowserTests
     {
         private TestConfiguration _testConfig;
 
@@ -28,6 +28,6 @@ namespace EcommerceAppTests.UITests
 
             driver.Driver.Navigate().GoToUrl("https://ecommercetestingapp.azurewebsites.net/");
         }
-        
+
     }
 }

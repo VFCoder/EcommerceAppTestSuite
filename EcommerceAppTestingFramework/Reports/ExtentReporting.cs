@@ -21,17 +21,35 @@ namespace EcommerceAppTestingFramework.Reports
             _extentReports = StartReporting();
         }
 
+        /*        private ExtentReports StartReporting()
+                {
+                    var extentReportPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/results/extentreport.html";
+                    var extentReports = new ExtentReports();
+                    var spark = new ExtentSparkReporter(extentReportPath);
+                    extentReports.AttachReporter(spark);
+
+                    return extentReports;
+                }*/
+
         private ExtentReports StartReporting()
         {
-            var extentReportPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/results/extentreport.html";
-            //Console.WriteLine("path: " + extentReportPath);
+            string reportDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "results");
+            if (!Directory.Exists(reportDirectory))
+            {
+                Directory.CreateDirectory(reportDirectory);
+            }
+
+            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string reportFileName = $"extentreport_{timestamp}.html";
+            string reportFilePath = Path.Combine(reportDirectory, reportFileName);
 
             var extentReports = new ExtentReports();
-            var spark = new ExtentSparkReporter(extentReportPath);
+            var spark = new ExtentSparkReporter(reportFilePath);
             extentReports.AttachReporter(spark);
 
             return extentReports;
         }
+
 
         public void CreateTest(string testName)
         {
@@ -46,6 +64,7 @@ namespace EcommerceAppTestingFramework.Reports
             if (testStatus == TestStatus.Failed)
             {
                 LogFail($"Test failed: {message}");
+                GetScreenshot();
             }
             else if (testStatus == TestStatus.Passed)
             {

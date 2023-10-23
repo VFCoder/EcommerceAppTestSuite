@@ -31,6 +31,8 @@ namespace EcommerceAppTestingFramework.Pages
         private IWebElement RegisterBtn => _driver.FindElementWait(By.Id("register-button"));
         private IWebElement RegistrationCompletedMessage => _driver.FindElementWait(By.CssSelector(".page-body .result"));
         private IWebElement ContinueBtn => _driver.FindElementWait(By.CssSelector(".register-continue-button"));
+        private IWebElement PasswordMismatchError => _driver.FindElementWait(By.Id("ConfirmPassword-error"));
+        private IWebElement InvalidEmailError => _driver.FindElementWait(By.Id("Email-error"));
 
 
         public string pageTitle = "Register";
@@ -105,6 +107,26 @@ namespace EcommerceAppTestingFramework.Pages
         {
             public const string Male = "male";
             public const string Female = "female";
+        }
+
+        public bool IsPasswordMismatchErrorMsgDisplayed()
+        {
+            return PasswordMismatchError.Displayed;
+        }
+
+        public string GetPasswordMismatchErrorMsg() 
+        {
+            return PasswordMismatchError.Text;
+        }
+
+        public bool IsInvalidEmailErrorMsgDisplayed()
+        {
+            return InvalidEmailError.Displayed;
+        }
+
+        public string GetInvalidEmailErrorMsg() 
+        {
+            return InvalidEmailError.Text;
         }
     }
 }

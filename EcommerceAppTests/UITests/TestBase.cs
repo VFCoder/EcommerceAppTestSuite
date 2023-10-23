@@ -32,6 +32,7 @@ namespace EcommerceAppTests.UITests
         protected BogusData _bogusData;
         protected BasePage _basePage;
         protected HomePage _homePage;
+        protected MyAccountPage _myAccountPage;
         protected LoginPage _loginPage;
         protected RegisterPage _registerPage;
         protected ProductPage _productPage;
@@ -51,6 +52,7 @@ namespace EcommerceAppTests.UITests
             _bogusData = _dataGenerator.GenerateData();
             _basePage = new BasePage(_driver);
             _homePage = new HomePage(_driver);
+            _myAccountPage = new MyAccountPage(_driver);
             _registerPage = new RegisterPage(_driver);
             _loginPage = new LoginPage(_driver);
             _productPage = new ProductPage(_driver);

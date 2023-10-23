@@ -13,7 +13,7 @@ namespace EcommerceAppTestingFramework.TestData
         public static string LastName { get; } = "User";
         public static string Email { get; } = "validuser@email.com";
         public static string UserName { get; } = "validuser@email.com";
-        public static string Password { get; } = "UserPassword123";
+        public static string Password { get; } = "ChangedPassword7";
         public static string PhoneNumber { get; } = "1234567890";
         public static string FaxNumber { get; } = "1234567890";
         public static string Company { get; } = "Valid User Co";

@@ -16,7 +16,7 @@ using static EcommerceAppTestingFramework.Pages.UserDataAndOrderVerifier;
 using EcommerceAppTestingFramework.Reports;
 using EcommerceAppTestingFramework.TestData;
 
-namespace EcommerceAppTests.UITests
+namespace EcommerceAppTests.UITests.OldTests
 {
     [TestFixture]
     [Category("UI_FunctionalTests")]
@@ -148,7 +148,7 @@ namespace EcommerceAppTests.UITests
             _productPage.VerifySearchResults(searchText);
 
         }
-        
+
         [Test]
         public void VerifyAdvancedSearchFunctionalityTest()
         {
