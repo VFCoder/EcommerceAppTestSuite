@@ -3,7 +3,7 @@ using EcommerceAppTestingFramework.Drivers;
 using NUnit.Framework;
 using System;
 
-namespace EcommerceAppTests.UITests.OldTests
+namespace EcommerceAppTests.UITests
 {
     [TestFixture]
     [Category("UI_CrossBrowserTests")]

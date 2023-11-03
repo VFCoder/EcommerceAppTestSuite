@@ -1,4 +1,5 @@
 ﻿using EcommerceAppTestingFramework.Drivers;
+using EcommerceAppTestingFramework.Models.UiModels;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using System;
@@ -138,37 +139,6 @@ namespace EcommerceAppTestingFramework.Pages
             {
                 Console.WriteLine($"Points: {priceInfo.Points}");
             }
-        }
-
-        public class ProductTable
-        {
-            public string ProductSKU { get; set; }
-            public string? ProductImage { get; set; }
-            public string ProductName { get; set; }
-            public string UnitPrice { get; set; }
-            public string Quantity { get; set; }
-            public string TotalPrice { get; set; }
-        }
-
-        public class PriceInfoBox
-        {
-            public string Subtotal { get; set; }
-            public string Shipping { get; set; }
-            public string Tax { get; set; }
-            public string Total { get; set; }
-            public string? Points { get; set; }
-        }
-
-        public class AddressInfoBox
-        {
-            public string Name { get; set; }
-            public string Email { get; set; }
-            public string Phone { get; set; }
-            public string Fax { get; set; }
-            public string Company { get; set; }
-            public string Address1 { get; set; }
-            public string CityStateZip { get; set; }
-            public string Country { get; set; }
         }
 
         public void CompareItems<T>(T expectedItem, T actualItem, Action<T, T, int> comparisonLogic)

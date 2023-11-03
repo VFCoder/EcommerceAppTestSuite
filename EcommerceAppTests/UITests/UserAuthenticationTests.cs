@@ -1,4 +1,6 @@
-﻿using EcommerceAppTestingFramework.Pages;
+﻿using EcommerceAppTestingFramework.Configuration;
+using EcommerceAppTestingFramework.Drivers;
+using EcommerceAppTestingFramework.Pages;
 using EcommerceAppTestingFramework.Reports;
 using EcommerceAppTestingFramework.TestData;
 using System;
@@ -9,6 +11,7 @@ using System.Threading.Tasks;
 using static EcommerceAppTestingFramework.Pages.RegisterPage;
 
 namespace EcommerceAppTests.UITests
+
 {
 
     [TestFixture]
@@ -17,6 +20,23 @@ namespace EcommerceAppTests.UITests
 
     public class UserAuthenticationTests : TestBase
     {
+        protected DataGenerator _dataGenerator;
+        protected BogusData _bogusData;
+        protected HomePage _homePage;
+        protected MyAccountPage _myAccountPage;
+        protected LoginPage _loginPage;
+        protected RegisterPage _registerPage;
+
+        [SetUp]
+        public void Setup()
+        {
+            _dataGenerator = new DataGenerator();
+            _bogusData = _dataGenerator.GenerateData();
+            _homePage = new HomePage(_driver);
+            _myAccountPage = new MyAccountPage(_driver);
+            _registerPage = new RegisterPage(_driver);
+            _loginPage = new LoginPage(_driver);
+        }
 
         private void UserRegistration_Base(string gender, string firstName, string lastName, string dobDay, string dobMonth, string dobYear, string email, string company, string password, string confirmPassword)
         {
@@ -126,7 +146,7 @@ namespace EcommerceAppTests.UITests
         }
 
 
-        private void UserLogin_Base(string email, string password)
+        protected void UserLogin_Base(string email, string password)
         {
             _extentReporting.LogInfo($"Starting test - Login User: {email}");
 

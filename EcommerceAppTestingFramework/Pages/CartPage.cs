@@ -1,4 +1,6 @@
 ﻿using EcommerceAppTestingFramework.Drivers;
+using EcommerceAppTestingFramework.Models.UiModels;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -33,8 +35,13 @@ namespace EcommerceAppTestingFramework.Pages
         private IWebElement PriceBoxTotal => _driver.FindElementWait(By.CssSelector(".order-total .value-summary"));
         private IWebElement PriceBoxPoints => _driver.FindElementWait(By.CssSelector(".earn-reward-points .value-summary"));
         private IWebElement ProductItemByCartOrder(int number) => _driver.FindElementWait(By.CssSelector($"tr:nth-of-type({number}) td.product"));
+        private IWebElement CartLink => _driver.FindElementWait(By.CssSelector(".ico-cart"));
+        private IWebElement CartQuantityIcon => _driver.FindElementWait(By.CssSelector(".ico-cart .cart-qty"));
+        private IWebElement RemoveProductFromCartBtn => _driver.FindElementWait(By.CssSelector(".remove-btn"));
+        private IWebElement EmptyCartMsg => _driver.FindElementWait(By.CssSelector(".order-summary-content .no-data"));
 
-        
+
+        public string pageTitle = "Shopping Cart";
 
         public bool AreProductsDisplayedInCart()
         {
@@ -108,18 +115,6 @@ namespace EcommerceAppTestingFramework.Pages
             return cartItems;
         }
 
-        public class CartItem
-        {
-            public string ProductSKU { get; set; }
-            public string ProductImage { get; set; }
-            public string ProductName { get; set; }
-            public string UnitPrice { get; set; }
-            public string Quantity { get; set; }
-            public string TotalPrice { get; set; }
-        }
-
-
-
         public PriceInfo GetPriceInfo()
         {
             string subtotal = PriceBoxSubtotal.Text;
@@ -138,15 +133,6 @@ namespace EcommerceAppTestingFramework.Pages
             };
         }
 
-        public class PriceInfo
-        {
-            public string Subtotal { get; set; }
-            public string Shipping { get; set; }
-            public string Tax { get; set; }
-            public string Total { get; set; }
-            public string Points { get; set; }
-        }
-
         public void PrintPriceInfo()
         {
             var priceInfo = GetPriceInfo();
@@ -160,7 +146,6 @@ namespace EcommerceAppTestingFramework.Pages
             Console.WriteLine($"Points: {priceInfo.Points}");
         }
 
-
         public void ClickTermsOfService()
         {
             TermsOfServiceCheckbox.Click();
@@ -169,6 +154,29 @@ namespace EcommerceAppTestingFramework.Pages
         public void ClickCheckoutButton()
         {
             CheckoutBtn.Click();
+        }
+
+
+        public void ClearCart()
+        {
+            CartLink.Click();
+
+            IReadOnlyCollection<IWebElement> cartRows = CartRows;
+
+            foreach(var row  in cartRows)
+            {
+                RemoveProductFromCartBtn.Click();
+            }
+
+            Assert.That(EmptyCartMsg.Text, Does.Contain("Your Shopping Cart is empty!"), "Empty cart message was not displayed");
+        }
+
+        public void ConfirmCartIsCleared()
+        {
+            if (CartQuantityIcon.Text != "(0)")
+            {
+                ClearCart();
+            }
         }
 
     }

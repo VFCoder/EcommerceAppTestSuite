@@ -63,9 +63,6 @@ namespace EcommerceAppTestingFramework.Pages
         private IWebElement BillingAddressZipInput => _driver.FindElementWait(By.Id("BillingNewAddress_ZipPostalCode"));
         private IWebElement BillingAddressPhoneInput => _driver.FindElementWait(By.Id("BillingNewAddress_PhoneNumber"));
 
-
-
-
         public string pageTitle = "Checkout";
 
         public void SelectBillingAddressCountryDropdown(string country)
@@ -130,13 +127,6 @@ namespace EcommerceAppTestingFramework.Pages
             ShippingMethodRadioBtn(value).Click();
         }
 
-        public class ShippingMethod
-        {
-            public const string Ground = "0";
-            public const string NextDayAir = "1";
-            public const string SecondndDayAir = "2";
-        }
-
         public string GetSelectedShippingMethod(string value)
         {
             string selectedShippingMethod = _driver.FindElement(By.CssSelector($"label[for='shippingoption_{value}']")).Text[..^8];
@@ -154,13 +144,6 @@ namespace EcommerceAppTestingFramework.Pages
             PaymentMethodRadioBtn(value).Click();
         }
 
-        public class PaymentMethod
-        {
-            public const string CheckMoneyOrder = "0";
-            public const string CreditCard = "1";
-            public const string PayPal = "2";
-        }
-
         public string GetSelectedPaymentMethod(string value)
         {
             string selectedPaymentMethod = _driver.FindElement(By.CssSelector($".payment-details label[for='paymentmethod_{value}']")).Text;
@@ -176,14 +159,6 @@ namespace EcommerceAppTestingFramework.Pages
         public void SelectCreditCartType(string cardType)
         {
             _driver.SelectDropDownByText(CreditCardTypeDropdown, cardType);
-        }
-
-        public class CreditCardType
-        {
-            public const string Visa = "Visa";
-            public const string MasterCard = "Master card";
-            public const string Discover = "Discover";
-            public const string AmericanExpress = "Amex";
         }
 
         public void InputCardHolderName(string name)
@@ -233,12 +208,6 @@ namespace EcommerceAppTestingFramework.Pages
             return AddressText;
         }
 
-        public class AddressType
-        {
-            public const string Billing = "billing";
-            public const string Shipping = "shipping";
-        }
-        
 /*        public string GetBillingAddressText()
         {
             string billingAddressText = $"{BillingAddressName.Text}\n{BillingAddressEmail.Text}\n{BillingAddressPhone.Text}\n{BillingAddressFax.Text}\n{BillingAddressCompany.Text}\n{BillingAddressAddress1.Text}\n{BillingAddressCityStateZip.Text}\n{BillingAddressCountry.Text}";
@@ -277,8 +246,5 @@ namespace EcommerceAppTestingFramework.Pages
             string orderNumberText = OrderNumber.Text[14..];
             return orderNumberText;
         }
-
-
-
     }
 }

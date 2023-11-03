@@ -21,16 +21,6 @@ namespace EcommerceAppTestingFramework.Reports
             _extentReports = StartReporting();
         }
 
-        /*        private ExtentReports StartReporting()
-                {
-                    var extentReportPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/results/extentreport.html";
-                    var extentReports = new ExtentReports();
-                    var spark = new ExtentSparkReporter(extentReportPath);
-                    extentReports.AttachReporter(spark);
-
-                    return extentReports;
-                }*/
-
         private ExtentReports StartReporting()
         {
             string reportDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "results");

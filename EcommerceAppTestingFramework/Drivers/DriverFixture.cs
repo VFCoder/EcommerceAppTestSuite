@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium.Interactions;
 using EcommerceAppTestingFramework.Configuration;
+using OpenQA.Selenium.IE;
 //using EcommerceAppTestingFramework.Reports;
 
 namespace EcommerceAppTestingFramework.Drivers
@@ -231,13 +232,6 @@ namespace EcommerceAppTestingFramework.Drivers
                 throw new NoSuchElementException($"No option containing '{partialText}' found in the dropdown.");
             }
         }
-        /*        public string GetScreenshot()
-                {
-                    var file = ((ITakesScreenshot)Driver).GetScreenshot();
-                    var img = file.AsBase64EncodedString;
-
-                    return img;
-                }*/
 
         public Screenshot GetScreenshot()
         {
@@ -257,17 +251,5 @@ namespace EcommerceAppTestingFramework.Drivers
 
     }
 
-    public enum BrowserType
-    {
-        Chrome,
-        Firefox,
-        Edge,
-        Safari
-    }
 
-    public enum TestRunType
-    {
-        Local,
-        Grid
-    }
 }

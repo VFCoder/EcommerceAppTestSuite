@@ -1,4 +1,5 @@
 ﻿using EcommerceAppTestingFramework.Drivers;
+using EcommerceAppTestingFramework.Models.UiModels;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using System;
@@ -22,28 +23,38 @@ namespace EcommerceAppTestingFramework.Pages
 
         private IReadOnlyCollection<IWebElement> ProductItems => _driver.FindElements(By.CssSelector(".product-item"));
         private IWebElement PageTitle => _driver.FindElementWait(By.CssSelector(".page-title"));
-        private IWebElement ProductListingName => _driver.FindElementWait(By.CssSelector(".product-title a"));
-        private IWebElement ProductListingPrice => _driver.FindElementWait(By.CssSelector(".price.actual-price"));
-        private IWebElement ProductListingImage => _driver.FindElementWait(By.CssSelector(".picture img"));
         private IReadOnlyCollection<IWebElement> SubcategoryItems => _driver.FindElements(By.CssSelector(".sub-category-item"));
         private IWebElement SubcategoryName => _driver.FindElementWait(By.CssSelector(".sub-category-item .title a"));
         private IWebElement SubcategoryImage => _driver.FindElementWait(By.CssSelector(".sub-category-item .picture img"));
-        private IWebElement ProductByIndex(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}']"));
-        private IWebElement ProductNameByIndex(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .product-title a"));
-        private IWebElement ProductPriceByIndex(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .price.actual-price"));
-        private IWebElement ProductImageByIndex(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .picture img"));
-        private IWebElement ProductDetailsName(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .product-name h1"));
-        private IWebElement ProductDetailsPrice(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .product-price span"));
-        private IWebElement ProductDetailsImage(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .product-essential .picture img"));
-        private IWebElement ProductDetailsQuantity(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .add-to-cart-panel .qty-input"));
-        private IWebElement ProductDetailsSKU(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .product-essential .sku .value"));
-        private IWebElement ProductDetailsManufacturer() => _driver.FindElementWait(By.CssSelector(".manufacturers a"));
-        private IWebElement AddToCartBtnByIndex(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'][class*='add-to-cart-button']"));
+
+        //product listing page:
+        private IWebElement ProductListingNameGlobal => _driver.FindElementWait(By.CssSelector(".product-title a"));
+        private IWebElement ProductListingPriceGlobal => _driver.FindElementWait(By.CssSelector(".price.actual-price"));
+        private IWebElement ProductListingImageGlobal => _driver.FindElementWait(By.CssSelector(".picture img"));
+        private IWebElement ProductById(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}']"));
+        private IWebElement ProductNameById(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .product-title a"));
+        private IWebElement ProductPriceById(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .price.actual-price"));
+        private IWebElement ProductImageById(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .picture img"));
+        private IWebElement AddToCartBtnById(int id) => _driver.FindElementWait(By.CssSelector($"div[data-productid='{id}'] .product-box-add-to-cart-button"));
+        private IWebElement ProductByIndex(int index) => _driver.FindElementWait(By.CssSelector($".item-box:nth-of-type({index})"));
+        private IWebElement ProductNameByIndex(int index) => _driver.FindElementWait(By.CssSelector($".item-box:nth-of-type({index}) .product-title a"));
+        private IWebElement ProductPriceByIndex(int index) => _driver.FindElementWait(By.CssSelector($".item-box:nth-of-type({index}) .price.actual-price"));
+        private IWebElement ProductImageByIndex(int index) => _driver.FindElementWait(By.CssSelector($".item-box:nth-of-type({index}) .picture img"));
+        private IWebElement AddToCartBtnByIndex(int index) => _driver.FindElementWait(By.CssSelector($".item-box:nth-of-type({index})  .product-box-add-to-cart-button"));
+
+        //product details page selectors:
+        private IWebElement ProductDetailsName => _driver.FindElementWait(By.CssSelector(".product-name h1"));
+        private IWebElement ProductDetailsPrice => _driver.FindElementWait(By.CssSelector(".product-price span"));
+        private IWebElement ProductDetailsImage => _driver.FindElementWait(By.CssSelector(".product-essential .picture img"));
+        private IWebElement ProductDetailsQuantity => _driver.FindElementWait(By.CssSelector(".add-to-cart-panel .qty-input"));
+        private IWebElement ProductDetailsSKU => _driver.FindElementWait(By.CssSelector(".product-essential .sku .value"));
+        private IWebElement ProductDetailsManufacturer => _driver.FindElementWait(By.CssSelector(".manufacturers a"));
         private IWebElement AddToCartBtnDetailsPage => _driver.FindElementWait(By.CssSelector(".add-to-cart-button"));
+        private IWebElement CategoriesBarProductDetails => _driver.FindElementWait(By.CssSelector("ul[itemscope]"));
+
         private IWebElement NotificationAddedToCartSuccess => _driver.FindElementWait(By.CssSelector(".bar-notification.success"));
         private IWebElement CloseNotificationBtn => _driver.FindElementWait(By.CssSelector(".close"));
-        private IWebElement CategoriesBarProductDetails => _driver.FindElementWait(By.CssSelector("ul[itemscope]"));
-        private IWebElement ProductItemByListingOrder(int number) => _driver.FindElementWait(By.CssSelector($".item-box:nth-of-type({number}) .product-title a"));
+
 
 
         public bool AreProductsDisplayed()
@@ -58,28 +69,16 @@ namespace EcommerceAppTestingFramework.Pages
             }
         }
 
-        public string? GetProductNameByListingOrder(int order)
-        {
-            try 
-            { 
-                return ProductItemByListingOrder(order).Text; 
-            }
-            catch (Exception e) 
-            { 
-                Console.WriteLine(e.Message);
-                return null; 
-            }
-        }
-
-        public void ClickProductDetailsByListingOrder(int order)
+        public string? GetProductNameByIndex(int index)
         {
             try
             {
-                ProductItemByListingOrder(order).Click();
+                return ProductNameByIndex(index).Text;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);               
+                Console.WriteLine(e.Message);
+                return null;
             }
         }
 
@@ -90,7 +89,7 @@ namespace EcommerceAppTestingFramework.Pages
 
         public string GetManufacturer()
         {
-            return ProductDetailsManufacturer().Text;
+            return ProductDetailsManufacturer.Text;
         }
 
         public List<Product>? GetAllProductsList()
@@ -293,7 +292,7 @@ namespace EcommerceAppTestingFramework.Pages
                     {
                         Console.WriteLine($"Stale element exception occurred for product item at index {i}. Retrying...");
                         productItems = _driver.FindElements(By.CssSelector(".product-item"));
-                        i--; 
+                        i--;
                     }
                 }
 
@@ -307,7 +306,40 @@ namespace EcommerceAppTestingFramework.Pages
         }
 
 
-        public Product? GetProductFromList(int index)
+        public Product? GetProductFromListById(int id)
+        {
+            //int index = 3;
+            if (ProductById(id).Displayed)
+            {
+                string productName = ProductNameById(id).Text;
+                string productPrice = ProductPriceById(id).Text;
+                string productImage = ProductImageById(id).GetAttribute("src");
+
+                productImage = productImage[..^9];
+
+                Product prod = new Product
+                {
+                    Name = productName,
+                    Price = productPrice,
+                    ImageUrl = productImage
+                };
+
+                Console.WriteLine();
+                Console.WriteLine($"Product Id {id}:");
+                Console.WriteLine($"Product Name: {prod.Name}");
+                Console.WriteLine($"Product Price: {prod.Price}");
+                Console.WriteLine($"Product Image URL: {prod.ImageUrl}");
+
+                return prod;
+            }
+            else
+            {
+                Console.WriteLine($"Product with index {id} not found.");
+                return null;
+            }
+        }
+
+        public Product? GetProductFromListByIndex(int index)
         {
             //int index = 3;
             if (ProductByIndex(index).Displayed)
@@ -326,7 +358,6 @@ namespace EcommerceAppTestingFramework.Pages
                 };
 
                 Console.WriteLine();
-                Console.WriteLine($"Product Id {index}:");
                 Console.WriteLine($"Product Name: {prod.Name}");
                 Console.WriteLine($"Product Price: {prod.Price}");
                 Console.WriteLine($"Product Image URL: {prod.ImageUrl}");
@@ -340,15 +371,15 @@ namespace EcommerceAppTestingFramework.Pages
             }
         }
 
-        public Product GetProductDetails(int index)
+        public Product GetProductDetails()
         {
             //int index = 3;
 
-            string productName = ProductDetailsName(index).Text;
-            string productPrice = ProductDetailsPrice(index).Text;
-            string productImage = ProductDetailsImage(index).GetAttribute("src");
-            string productQuantity = ProductDetailsQuantity(index).GetAttribute("value");
-            string productSKU = ProductDetailsSKU(index).Text;
+            string productName = ProductDetailsName.Text;
+            string productPrice = ProductDetailsPrice.Text;
+            string productImage = ProductDetailsImage.GetAttribute("src");
+            string productQuantity = ProductDetailsQuantity.GetAttribute("value");
+            string productSKU = ProductDetailsSKU.Text;
 
             productImage = productImage[..^9];
 
@@ -375,7 +406,31 @@ namespace EcommerceAppTestingFramework.Pages
 
         public void SelectProductDetailsByIndex(int index)
         {
-            ProductNameByIndex(index).Click();
+            try
+            {
+                ProductNameByIndex(index).Click();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        public void SelectProductDetailsById(int id)
+        {
+            try
+            {
+                ProductNameById(id).Click();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        public void AddProductToCartById(int id)
+        {
+            AddToCartBtnById(id).Click();
         }
 
         public void AddProductToCartByIndex(int index)
@@ -403,50 +458,6 @@ namespace EcommerceAppTestingFramework.Pages
             return CategoriesBarProductDetails.Text;
         }
 
-    }
-
-    
-
-    public class Product
-    {
-        public string Name { get; set; }
-        public string Price { get; set; }
-        public string ImageUrl { get; set; }
-        public string Quantity { get; set; }
-        public string SKU { get; set; }
-    }
-
-    public class Subcategory
-    {
-        public string Name { get; set; }
-        public string ImageUrl { get; set; }
-    }
-
-    public class ProductPageTitle
-    {
-        public const string Computers = "Computers";
-        public const string Desktops = "Desktops";
-        public const string Notebooks = "Notebooks";
-        public const string Software = "Software";
-        public const string Electronics = "Electronics";
-        public const string CameraPhoto = "Camera & photo";
-        public const string CellPhones = "Cell phones";
-        public const string Others = "Others";
-        public const string Apparel = "Apparel";
-        public const string Shoes = "Shoes";
-        public const string Clothing = "Clothing";
-        public const string Accessories = "Accessories";
-        public const string DigitalDownloads = "Digital downloads";
-        public const string Books = "Books";
-        public const string Jewelry = "Jewelry";
-        public const string GiftCards = "Gift Cards";
-    }
-
-    public class ManufacturerList
-    {
-        public const string Apple = "Apple";
-        public const string HP = "HP";
-        public const string Nike = "Nike";
     }
 }
 

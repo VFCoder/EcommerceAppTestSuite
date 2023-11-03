@@ -28,19 +28,7 @@ namespace EcommerceAppTests.UITests
         protected TestConfiguration _testConfig;
         protected IDriverActions _driver;
         protected ExtentReporting _extentReporting;
-        protected DataGenerator _dataGenerator;
-        protected BogusData _bogusData;
         protected BasePage _basePage;
-        protected HomePage _homePage;
-        protected MyAccountPage _myAccountPage;
-        protected LoginPage _loginPage;
-        protected RegisterPage _registerPage;
-        protected ProductPage _productPage;
-        protected SearchPage _searchPage;
-        protected UserDataAndOrderVerifier _verifier;
-        protected CartPage _cartPage;
-        protected CheckoutPage _checkoutPage;
-        protected OrderDetailsPage _orderDetailsPage;
 
         [SetUp]
         public void Setup()
@@ -48,21 +36,8 @@ namespace EcommerceAppTests.UITests
             _testConfig = new TestConfiguration();
             _driver = new DriverFixture(_testConfig);
             _extentReporting = new ExtentReporting(_driver);
-            _dataGenerator = new DataGenerator();
-            _bogusData = _dataGenerator.GenerateData();
-            _basePage = new BasePage(_driver);
-            _homePage = new HomePage(_driver);
-            _myAccountPage = new MyAccountPage(_driver);
-            _registerPage = new RegisterPage(_driver);
-            _loginPage = new LoginPage(_driver);
-            _productPage = new ProductPage(_driver);
-            _searchPage = new SearchPage(_driver);
-            _verifier = new UserDataAndOrderVerifier(_driver);
-            _cartPage = new CartPage(_driver);
-            _checkoutPage = new CheckoutPage(_driver);
-            _orderDetailsPage = new OrderDetailsPage(_driver);
-
             _extentReporting.CreateTest(TestContext.CurrentContext.Test.MethodName);
+            _basePage = new BasePage(_driver);
         }
 
         [TearDown]

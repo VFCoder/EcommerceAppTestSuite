@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EcommerceAppTestingFramework.Models.UiModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,11 @@ namespace EcommerceAppTestingFramework
         public static string ResponseContent { get; set; }
         public static string AccessTokenResponseContent { get; set; }
         public static string AccessToken { get; set; }
+        public static List<ProductTable> CartItems { get; set; }
+        public static PriceInfoBox CartPriceInfo { get; set; }
+        public static int ProductIndex { get; set; }
+
+
 
         private static readonly Dictionary<string, string> _globalDictionary = new Dictionary<string, string>();
 
