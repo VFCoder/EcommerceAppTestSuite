@@ -43,10 +43,12 @@ namespace EcommerceAppTests.UITests
             // Common test steps for user registration
             _extentReporting.LogInfo($"Starting test - Register user: {firstName} {lastName} {email}");
 
+            //navigate to register page
             _basePage.ClickRegisterLink();
             Assert.That(_basePage.PageLoaded(_registerPage.pageTitle), Is.True, "Register page did not load correctly.");
             _extentReporting.LogInfo("Navigated to register page");
 
+            //complete registration form
             _registerPage.SelectGender(gender);
             _registerPage.EnterFirstName(firstName);
             _registerPage.EnterLastName(lastName);
@@ -66,6 +68,7 @@ namespace EcommerceAppTests.UITests
         [Category("Positive_Test")]
         public void UserRegistration_ValidCredentials()
         {
+            //complete registration form
             UserRegistration_Base(
                 $"{Gender.Male}", 
                 $"{_bogusData.FirstName}", 
@@ -79,6 +82,7 @@ namespace EcommerceAppTests.UITests
                 ValidUserData.Password
                 );
 
+            //confirm registration is successful
             Assert.That(_registerPage.IsRegistrationCompleted(), Is.True, "Registration completed message was not displayed correctly.");
             _extentReporting.LogInfo($"Register form successfully filled and submitted for user {_bogusData.FirstName} {_bogusData.LastName} {_bogusData.Email}");
         }
@@ -88,6 +92,7 @@ namespace EcommerceAppTests.UITests
         [Category("Negative_Test")]
         public void UserRegistration_PasswordConfirmationMismatch()
         {
+            //complete register form with mismatched password confirmation
             UserRegistration_Base(
                 $"{Gender.Male}",
                 $"{_bogusData.FirstName}",
@@ -101,6 +106,7 @@ namespace EcommerceAppTests.UITests
                 "PasswordMismatch"
                 );
 
+            //confirm error message
             bool isErrorMessageVisible = _registerPage.IsPasswordMismatchErrorMsgDisplayed();
             string errorMessage = _registerPage.GetPasswordMismatchErrorMsg();
 
@@ -117,6 +123,7 @@ namespace EcommerceAppTests.UITests
         [Category("Negative_Test")]
         public void UserRegistration_InvalidEmail()
         {
+            //complete registration form with invalid email
             UserRegistration_Base(
                 $"{Gender.Male}",
                 $"{_bogusData.FirstName}",
@@ -130,6 +137,7 @@ namespace EcommerceAppTests.UITests
                 ValidUserData.Password
                 );
 
+            //confirm error message
             bool isErrorMessageVisible = _registerPage.IsInvalidEmailErrorMsgDisplayed();
             string errorMessage = _registerPage.GetInvalidEmailErrorMsg();
 
@@ -146,13 +154,13 @@ namespace EcommerceAppTests.UITests
         {
             _extentReporting.LogInfo($"Starting test - Login User: {email}");
 
+            //navigate to login page
             _basePage.ClickLoginLink();
             Assert.That(_basePage.PageLoaded(_loginPage.pageTitle), Is.True, "Login page did not load correctly.");
             _extentReporting.LogInfo("Navigated to login page");
 
-            _loginPage.EnterLoginEmail(email);
-            _loginPage.EnterLoginPassword(password);
-            _loginPage.ClickLoginBtn();
+            //submit login form
+            _loginPage.LoginHelper(email,password);
 
         }
 
@@ -161,8 +169,10 @@ namespace EcommerceAppTests.UITests
         [Category("Positive_Test")]
         public void UserLogin_ValidCredentials()
         {
+            //login as valid user
             UserLogin_Base(ValidUserData.Email, ValidUserData.Password);
 
+            //confirm login is successful
             Assert.That(_basePage.IsLogoutLinkDisplayed, Is.True, "Logout link is not displayed.");
             _extentReporting.LogInfo("Submitted login credentials and logged in successfully.");
         }
@@ -172,8 +182,10 @@ namespace EcommerceAppTests.UITests
         [Category("Negative_Test")]
         public void UserLogin_InvalidEmail()
         {
+            //attempt login with invalid email
             UserLogin_Base("InvalidEmail", ValidUserData.Password);
 
+            //confirm error message is displayed
             bool isErrorMessageVisible = _registerPage.IsInvalidEmailErrorMsgDisplayed();
             string errorMessage = _registerPage.GetInvalidEmailErrorMsg();
 
@@ -194,6 +206,7 @@ namespace EcommerceAppTests.UITests
             //attempt login with wrong password:
             UserLogin_Base(ValidUserData.Email, "WrongPassword");
 
+            //confirm error message is displayed
             bool isErrorMessageVisible = _loginPage.IsLoginErrorMsgDisplayed();
             string errorMessage = _loginPage.GetLoginErrorMsg();
 
@@ -232,6 +245,7 @@ namespace EcommerceAppTests.UITests
             //change password:
             ChangePassword_Base(ValidUserData.Password, "ChangedPassword8", "ChangedPassword8");
 
+            //confirm "password successfully changed" message is displayed
             Assert.That(_myAccountPage.PasswordChangeSuccessMsgDisplayed(), Is.True, "Password change success message was not displayed.");
             _extentReporting.LogInfo("Changed password successfully");
             _basePage.CloseNotificationPopup();
@@ -251,14 +265,17 @@ namespace EcommerceAppTests.UITests
         {
             _extentReporting.LogInfo("Starting test - Change password");
 
+            //navigate to my account page
             _basePage.ClickMyAccountLink();
             Assert.That(_basePage.PageLoaded(_myAccountPage.pageTitle), Is.True, "My account page did not load correctly.");
             _extentReporting.LogInfo("Navigated to my account page");
 
+            //go to change password area
             _myAccountPage.ClickChangePasswordLink();
             Assert.That(_myAccountPage.ChangePasswordPageTitleDisplayed, Is.True, "Change password page did not load correctly.");
             _extentReporting.LogInfo("Navigated to change password page");
 
+            //change password
             _myAccountPage.EnterOldPassword(oldPassword);
             _myAccountPage.EnterNewPassword(newPassword);
             _myAccountPage.EnterConfirmNewPassword(confirmNewPassword);
