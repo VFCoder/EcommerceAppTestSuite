@@ -27,14 +27,6 @@ namespace EcommerceAppTests.UITests
             _loginPage = new LoginPage(_driver);
         }
 
-        [Test]
-        [Category("Smoke_Test")]
-        [Category("Positive_Test")]
-        public void NavigateToBasePage() 
-        {
-            _driver.NavigateToBaseURL();
-            Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
-        }
 
         [Test]
         [Category("Smoke_Test")]
@@ -45,10 +37,8 @@ namespace EcommerceAppTests.UITests
         [TestCase(PageNavigation.ShoppingCartPage)]
         public void NavigateToPageWhileLoggedOut(string page)
         {
-            NavigateToBasePage();
             _basePage.NavigateToPage(page);
             Assert.That(_basePage.PageLoaded(page), Is.True, $"{page} page did not load correctly.");
-
         }
 
         [Test]
@@ -59,7 +49,6 @@ namespace EcommerceAppTests.UITests
         [TestCase(PageNavigation.MyAccountPage)]
         public void NavigateToPageWhileLoggedIn(string page)
         {
-            NavigateToBasePage();
             _loginPage.LoginHelper(ValidUserData.Email, ValidUserData.Password);
             _basePage.NavigateToPage(page);
             Assert.That(_basePage.PageLoaded(page), Is.True, $"{page} page did not load correctly.");
@@ -72,9 +61,6 @@ namespace EcommerceAppTests.UITests
         [TestCase("camera")]
         public void VerifyBasicSearchFunctionality(string searchText)
         {
-            _driver.NavigateToBaseURL();
-            Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
-
             _basePage.EnterSearchText(searchText);
             _basePage.ClickSearchButton();
             Assert.That(_basePage.PageLoaded(_searchPage.pageTitle), Is.True, "Search page did not load correctly.");
@@ -88,9 +74,6 @@ namespace EcommerceAppTests.UITests
         [TestCase("phone", ProductPageTitle.Electronics)]
         public void VerifyAdvancedSearchFunctionality(string searchText, string productCategory)
         {
-            _driver.NavigateToBaseURL();
-            Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
-
             _basePage.EnterSearchText(searchText);
             _basePage.GetAllSearchDropdownItems(searchText);
             _basePage.ClickSearchButton();

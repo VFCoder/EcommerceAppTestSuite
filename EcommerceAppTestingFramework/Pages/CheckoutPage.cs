@@ -1,10 +1,13 @@
-﻿using EcommerceAppTestingFramework.Drivers;
+﻿using Bogus.DataSets;
+using EcommerceAppTestingFramework.Drivers;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EcommerceAppTestingFramework.Pages
 {
@@ -154,6 +157,18 @@ namespace EcommerceAppTestingFramework.Pages
         public void ClickContinueFromPaymentMethod()
         {
             ContinueBtnPaymentMethod.Click();
+        }
+
+        public void CreditCardFormHelper(string cardType, string name, string cardNumber, string month, string year, string cvcNumber)
+        {
+            _driver.SelectDropDownByText(CreditCardTypeDropdown, cardType);
+            CreditCardNameInput.SendKeys(name);
+            CreditCardNumberInput.SendKeys(cardNumber);
+            _driver.SelectDropDownByText(CreditCardExpireMonth, month);
+            _driver.SelectDropDownByText(CreditCardExpireYear, year);
+            CreditCardCodeInput.SendKeys(cvcNumber);
+            ContinueBtnPaymentInfo.Click();
+
         }
 
         public void SelectCreditCartType(string cardType)

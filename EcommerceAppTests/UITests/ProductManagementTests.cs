@@ -52,53 +52,51 @@ namespace EcommerceAppTests.UITests
         [Test]
         [Category("Smoke_Test")]
         [Category("Positive_Test")]
-        public void VerifyAllProductListings()
-        {
-            _driver.NavigateToBaseURL();
-            Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
+        [TestCase(Category.Computers, ProductPageTitle.Computers, true)]
+        [TestCase(Category.Electronics, ProductPageTitle.Electronics, true)]
+        [TestCase(Category.Apparel, ProductPageTitle.Apparel, true)]
+        [TestCase(Category.Desktops, ProductPageTitle.Desktops)]
+        [TestCase(Category.Notebooks, ProductPageTitle.Notebooks)]
+        [TestCase(Category.Software, ProductPageTitle.Software)]
+        [TestCase(Category.CameraPhoto, ProductPageTitle.CameraPhoto)]
+        [TestCase(Category.CellPhones, ProductPageTitle.CellPhones)]
+        [TestCase(Category.Others, ProductPageTitle.Others)]
+        [TestCase(Category.Shoes, ProductPageTitle.Shoes)]
+        [TestCase(Category.Clothing, ProductPageTitle.Clothing)]
+        [TestCase(Category.Accessories, ProductPageTitle.Accessories)]
+        [TestCase(Category.DigitalDownloads, ProductPageTitle.DigitalDownloads)]
+        [TestCase(Category.Books, ProductPageTitle.Books)]
+        [TestCase(Category.Jewelry, ProductPageTitle.Jewelry)]
+        [TestCase(Category.GiftCards, ProductPageTitle.GiftCards)]
 
-            VerifyListing_Base(Category.Computers, ProductPageTitle.Computers, true);
-            VerifyListing_Base(Category.Electronics, ProductPageTitle.Electronics, true);
-            VerifyListing_Base(Category.Apparel, ProductPageTitle.Apparel, true);
-            VerifyListing_Base(Category.Desktops, ProductPageTitle.Desktops);
-            VerifyListing_Base(Category.Notebooks, ProductPageTitle.Notebooks);
-            VerifyListing_Base(Category.Software, ProductPageTitle.Software);
-            VerifyListing_Base(Category.CameraPhoto, ProductPageTitle.CameraPhoto);
-            VerifyListing_Base(Category.CellPhones, ProductPageTitle.CellPhones);
-            VerifyListing_Base(Category.Others, ProductPageTitle.Others);
-            VerifyListing_Base(Category.Shoes, ProductPageTitle.Shoes);
-            VerifyListing_Base(Category.Clothing, ProductPageTitle.Clothing);
-            VerifyListing_Base(Category.Accessories, ProductPageTitle.Accessories);
-            VerifyListing_Base(Category.DigitalDownloads, ProductPageTitle.DigitalDownloads);
-            VerifyListing_Base(Category.Books, ProductPageTitle.Books);
-            VerifyListing_Base(Category.Jewelry, ProductPageTitle.Jewelry);
-            VerifyListing_Base(Category.GiftCards, ProductPageTitle.GiftCards);
+        public void VerifyAllProductListings(string productCategory, string productPageTitle, bool isSubcategory = false)
+        {
+            //verify product listing page
+            VerifyListing_Base(productCategory, productPageTitle, isSubcategory);
         }
 
         [Test]
         [Category("Smoke_Test")]
         [Category("Positive_Test")]
-        public void VerifyProductsDetailPage()
+        [TestCase(Category.Desktops, ProductPageTitle.Desktops, 2)]
+
+        public void VerifyProductsDetailPage(string productCategory, string productPageTitle, int productIndex)
         {
-            _driver.NavigateToBaseURL();
-            Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
+            //verify product listing page
+            VerifyListing_Base(productCategory, productPageTitle);
 
-            VerifyListing_Base(Category.Desktops, ProductPageTitle.Desktops);
+/*            //select product by product id:
 
-            //select product by product id:
+            Product selectedProduct = _productPage.GetProductFromListById(productId);
+            _productPage.SelectProductDetailsById(productId);*/
 
-            //int productIdToVerify = 2;
-            //Product selectedProduct = _productPage.GetProductFromListById(productIdToVerify);
-            //_productPage.SelectProductDetailsById(productIdToVerify);
-
-            //select product by index:
-
-            int productIndexToVerify = 3;
-            Product selectedProduct = _productPage.GetProductFromListByIndex(productIndexToVerify);
-            _productPage.SelectProductDetailsByIndex(productIndexToVerify);
+            //select product details by index
+            Product selectedProduct = _productPage.GetProductFromListByIndex(productIndex);
+            _productPage.SelectProductDetailsByIndex(productIndex);
 
             Assert.That(_basePage.PageLoaded(selectedProduct.Name), Is.True, "Product details page did not load");
 
+            //verify product details are correct
             Product productDetails = _productPage.GetProductDetails();
 
             Assert.Multiple(() =>

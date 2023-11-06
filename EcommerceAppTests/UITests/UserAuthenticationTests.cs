@@ -43,10 +43,6 @@ namespace EcommerceAppTests.UITests
             // Common test steps for user registration
             _extentReporting.LogInfo($"Starting test - Register user: {firstName} {lastName} {email}");
 
-            _driver.NavigateToBaseURL();
-            Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
-            _extentReporting.LogInfo("Navigated to base url");
-
             _basePage.ClickRegisterLink();
             Assert.That(_basePage.PageLoaded(_registerPage.pageTitle), Is.True, "Register page did not load correctly.");
             _extentReporting.LogInfo("Navigated to register page");
@@ -149,10 +145,6 @@ namespace EcommerceAppTests.UITests
         protected void UserLogin_Base(string email, string password)
         {
             _extentReporting.LogInfo($"Starting test - Login User: {email}");
-
-            _driver.NavigateToBaseURL();
-            Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
-            _extentReporting.LogInfo("Navigated to base url");
 
             _basePage.ClickLoginLink();
             Assert.That(_basePage.PageLoaded(_loginPage.pageTitle), Is.True, "Login page did not load correctly.");
@@ -258,10 +250,6 @@ namespace EcommerceAppTests.UITests
         private void ChangePassword_Base(string oldPassword, string newPassword, string confirmNewPassword)
         {
             _extentReporting.LogInfo("Starting test - Change password");
-
-            _driver.NavigateToBaseURL();
-            Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
-            _extentReporting.LogInfo("Navigated to base url");
 
             _basePage.ClickMyAccountLink();
             Assert.That(_basePage.PageLoaded(_myAccountPage.pageTitle), Is.True, "My account page did not load correctly.");

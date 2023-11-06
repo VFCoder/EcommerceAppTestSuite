@@ -29,6 +29,7 @@ namespace EcommerceAppTests.UITests
         protected IDriverActions _driver;
         protected ExtentReporting _extentReporting;
         protected BasePage _basePage;
+        private HomePage _homePage;
 
         [SetUp]
         public void Setup()
@@ -38,6 +39,13 @@ namespace EcommerceAppTests.UITests
             _extentReporting = new ExtentReporting(_driver);
             _extentReporting.CreateTest(TestContext.CurrentContext.Test.MethodName);
             _basePage = new BasePage(_driver);
+            _homePage = new HomePage(_driver);
+
+            //navigate to base url
+            _driver.NavigateToBaseURL();
+            Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
+            _extentReporting.LogInfo("Navigated to base url");
+
         }
 
         [TearDown]
