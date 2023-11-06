@@ -1,4 +1,5 @@
 ﻿using EcommerceAppTestingFramework.Drivers;
+using EcommerceAppTestingFramework.Models.UiModels;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,12 @@ namespace EcommerceAppTestingFramework.Pages
     public class LoginPage
     {
         private readonly IDriverActions _driver;
+        private readonly BasePage _basePage;
 
         public LoginPage(IDriverActions driver)
         {
             _driver = driver;
+            _basePage = new BasePage(_driver);
         }
         private IWebElement EmailInput => _driver.FindElementWait(By.Id("Email"));
         private IWebElement PasswordInput => _driver.FindElementWait(By.Id("Password"));
@@ -27,6 +30,23 @@ namespace EcommerceAppTestingFramework.Pages
         public string pageTitle = "Login";
         public string recoveryPageTitle = "Login";
 
+        public void LoginHelper(string email, string password)
+        {
+            if (_basePage.PageLoadedPassing(NavigationPageTitle.LoginPage))
+            {
+                EnterLoginEmail(email);
+                EnterLoginPassword(password);
+                ClickLoginBtn();
+            }
+            else
+            {
+                _basePage.NavigateToPage(NavigationPageTitle.LoginPage);
+                EnterLoginEmail(email);
+                EnterLoginPassword(password);
+                ClickLoginBtn();
+            }
+
+        }
 
         public void EnterLoginEmail(string email)
         {

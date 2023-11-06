@@ -16,12 +16,15 @@ using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium.Interactions;
 using EcommerceAppTestingFramework.Configuration;
 using OpenQA.Selenium.IE;
+using WebDriverManager.DriverConfigs.Impl;
+using WebDriverManager;
 //using EcommerceAppTestingFramework.Reports;
 
 namespace EcommerceAppTestingFramework.Drivers
 {
     public class DriverFixture : IWebDriver, IDriverActions, ITakesScreenshot
     {
+
         private IWebDriver Driver { get; set; }
         public WebDriverWait DriverWait { get; }
 
@@ -77,6 +80,24 @@ namespace EcommerceAppTestingFramework.Drivers
                 BrowserType.Edge => new RemoteWebDriver(new Uri(GridUrl), new EdgeOptions()),
                 _ => new RemoteWebDriver(new Uri(GridUrl), new ChromeOptions())
             };
+        }
+
+        public static IWebDriver CreateDriverManager(BrowserType browserType)
+        {
+            switch (browserType)
+            {
+                case BrowserType.Chrome:
+                    new DriverManager().SetUpDriver(new ChromeConfig());
+                    return new ChromeDriver();
+                case BrowserType.Firefox:
+                    new DriverManager().SetUpDriver(new FirefoxConfig());
+                    return new FirefoxDriver();
+                case BrowserType.Edge:
+                    new DriverManager().SetUpDriver(new EdgeConfig());
+                    return new EdgeDriver();
+                default:
+                    throw new WebDriverException("Unsupported browser type");
+            }
         }
 
         public string Url { get => Driver.Url; set => Driver.Url = value; }
@@ -154,7 +175,7 @@ namespace EcommerceAppTestingFramework.Drivers
         public bool WaitForTitle(string expectedTitle, int? timeoutInSeconds = null)
         {
             var wait = new WebDriverWait(this, new TimeSpan(0, 0, timeoutInSeconds ?? 10));
-            return wait.Until(driver => driver.Title.Contains(expectedTitle));
+            return wait.Until(driver => driver.Title.ToLower().Contains(expectedTitle.ToLower()));
 
         }
 

@@ -1,6 +1,7 @@
 ﻿using EcommerceAppTestingFramework.Configuration;
 using EcommerceAppTestingFramework.Models.UiModels;
 using EcommerceAppTestingFramework.Pages;
+using EcommerceAppTestingFramework.TestData;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace EcommerceAppTests.UITests
         private HomePage _homePage;
         private SearchPage _searchPage;
         private ProductPage _productPage;
+        private LoginPage _loginPage;
 
         [SetUp]
         public void SetUp()
@@ -22,14 +24,54 @@ namespace EcommerceAppTests.UITests
             _homePage = new HomePage(_driver);
             _searchPage = new SearchPage(_driver);
             _productPage = new ProductPage(_driver);
+            _loginPage = new LoginPage(_driver);
         }
 
         [Test]
         [Category("Smoke_Test")]
         [Category("Positive_Test")]
-        public void VerifyBasicSearchFunctionality()
+        public void NavigateToBasePage() 
         {
-            string searchText = "apple";
+            _driver.NavigateToBaseURL();
+            Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
+        }
+
+        [Test]
+        [Category("Smoke_Test")]
+        [Category("Positive_Test")]
+        [TestCase(PageNavigation.LoginPage)]
+        [TestCase(PageNavigation.RegisterPage)]
+        [TestCase(PageNavigation.WishlistPage)]
+        [TestCase(PageNavigation.ShoppingCartPage)]
+        public void NavigateToPageWhileLoggedOut(string page)
+        {
+            NavigateToBasePage();
+            _basePage.NavigateToPage(page);
+            Assert.That(_basePage.PageLoaded(page), Is.True, $"{page} page did not load correctly.");
+
+        }
+
+        [Test]
+        [Category("Smoke_Test")]
+        [Category("Positive_Test")]
+        [TestCase(PageNavigation.WishlistPage)]
+        [TestCase(PageNavigation.ShoppingCartPage)]
+        [TestCase(PageNavigation.MyAccountPage)]
+        public void NavigateToPageWhileLoggedIn(string page)
+        {
+            NavigateToBasePage();
+            _loginPage.LoginHelper(ValidUserData.Email, ValidUserData.Password);
+            _basePage.NavigateToPage(page);
+            Assert.That(_basePage.PageLoaded(page), Is.True, $"{page} page did not load correctly.");
+        }
+
+        [Test]
+        [Category("Smoke_Test")]
+        [Category("Positive_Test")]
+        [TestCase("apple")]
+        [TestCase("camera")]
+        public void VerifyBasicSearchFunctionality(string searchText)
+        {
             _driver.NavigateToBaseURL();
             Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
 
@@ -42,9 +84,10 @@ namespace EcommerceAppTests.UITests
         [Test]
         [Category("Functional_Test")]
         [Category("Positive_Test")]
-        public void VerifyAdvancedSearchFunctionality()
+        [TestCase("cam", ProductPageTitle.Electronics)]
+        [TestCase("phone", ProductPageTitle.Electronics)]
+        public void VerifyAdvancedSearchFunctionality(string searchText, string productCategory)
         {
-            string searchText = "cam";
             _driver.NavigateToBaseURL();
             Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
 
@@ -57,13 +100,13 @@ namespace EcommerceAppTests.UITests
             Assert.That(_searchPage.GetSearchKeywordAdvancedText(), Is.EqualTo(searchText), "Search text is not correct.");
 
             _searchPage.ClickAdvancedSearchCheckbox();
-            _searchPage.SelectCategoryAdvancedSearchDropdown(ProductPageTitle.Electronics);
+            _searchPage.SelectCategoryAdvancedSearchDropdown(productCategory);
             _searchPage.ClickSearchSubcategoriesCheckbox();
             //_searchPage.SelectManufacturerAdvancedSearchDropdown(ManufacturerList.Apple);
             _searchPage.ClickSearchButtonAdvanced();
 
             _productPage.GetAllProductsList();
-            _productPage.VerifyAdvancedSearchResults(searchText, ProductPageTitle.Electronics);
+            _productPage.VerifyAdvancedSearchResults(searchText, productCategory);
 
         }
     }

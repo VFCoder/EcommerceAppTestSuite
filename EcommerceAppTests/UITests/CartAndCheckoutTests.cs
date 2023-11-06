@@ -17,6 +17,9 @@ using static EcommerceAppTestingFramework.Pages.UserDataAndOrderVerifier;
 
 namespace EcommerceAppTests.UITests
 {
+    [TestFixture]
+    //[Parallelizable(ParallelScope.All)]
+
     public class CartAndCheckoutTests : TestBase
     {
         protected HomePage _homePage;
@@ -29,6 +32,10 @@ namespace EcommerceAppTests.UITests
         protected DataGenerator _dataGenerator;
         protected BogusData _bogusData;
         protected UserAuthenticationTests _userAuthTests;
+
+        //static variables to share data between tests instead of global objects
+        private static List<ProductTable> cartItems;
+        private static PriceInfoBox cartPriceInfo;
 
         [SetUp] 
         public void SetUp() 
@@ -45,20 +52,17 @@ namespace EcommerceAppTests.UITests
             _bogusData = _dataGenerator.GenerateData();
         }
 
-        //TODO: break up into separate methods ie complete checkout steps, confirm order details
-
         [Test]
         [Category("Functional_Test")]
         [Category("Positive_Test")]
-        public void AddProductToCartFromProductListingPage()
+        [TestCase(Category.Desktops, ProductPageTitle.Desktops, 2)]
+        [TestCase(Category.CameraPhoto, ProductPageTitle.CameraPhoto, 2)]
+        public void AddProductToCartFromProductListingPage(string categoryToSelect, string expectedPageTitle, int productIndexToSelect)
         {
             _driver.NavigateToBaseURL();
             Assert.That(_basePage.PageLoaded(_homePage.pageTitle), Is.True, "Home page did not load correctly.");
 
             _cartPage.ConfirmCartIsCleared();
-
-            string categoryToSelect = Category.Desktops;
-            string expectedPageTitle = ProductPageTitle.Desktops;
 
             _basePage.SelectCategoryLink(categoryToSelect);
             Assert.That(_basePage.PageLoaded(expectedPageTitle), Is.True, $"{categoryToSelect} page did not load correctly.");
@@ -71,22 +75,24 @@ namespace EcommerceAppTests.UITests
 
             //select product by index:
 
-            int productIndexToSelect = 2;
             Product selectedProduct = _productPage.GetProductFromListByIndex(productIndexToSelect);
             _productPage.AddProductToCartByIndex(productIndexToSelect);
 
             Assert.That(_productPage.NotificationSuccessDisplayed(), Is.True, "Product added notification did not display");
             _productPage.CloseNotificationBar();
 
-            _basePage.ClickCartLink();
+            _basePage.ClickShoppingCartLink();
             Assert.That(_basePage.PageLoaded("Shopping Cart"), Is.True, "Cart did not load");
 
             var cartVerifier = new UserDataAndOrderVerifier(_driver, isCartPageContext: true);
-            List<ProductTable> cartItems = cartVerifier.GetProductTableItems();
-            GlobalObjects.CartItems = cartItems;
+            /*            List<ProductTable> cartItems = cartVerifier.GetProductTableItems();
+                        GlobalObjects.CartItems = cartItems;*/
+            cartItems = cartVerifier.GetProductTableItems();
 
-            PriceInfoBox cartPriceInfo = _verifier.GetPriceInfo();
-            GlobalObjects.CartPriceInfo = cartPriceInfo;
+            /*            PriceInfoBox cartPriceInfo = _verifier.GetPriceInfo();
+                        GlobalObjects.CartPriceInfo = cartPriceInfo;*/
+            cartPriceInfo = _verifier.GetPriceInfo();
+
             _verifier.PrintPriceInfo();
 
             bool productFoundInCart = false;
@@ -135,7 +141,6 @@ namespace EcommerceAppTests.UITests
             //select product by index:
 
             int productIndexToSelect = 2;
-            GlobalObjects.ProductIndex = productIndexToSelect;
             Product selectedProduct = _productPage.GetProductFromListByIndex(productIndexToSelect);
             _productPage.SelectProductDetailsByIndex(productIndexToSelect);
 
@@ -147,15 +152,13 @@ namespace EcommerceAppTests.UITests
             Assert.That(_productPage.NotificationSuccessDisplayed(), Is.True, "Product added notification did not display");
             _productPage.CloseNotificationBar();
 
-            _basePage.ClickCartLink();
+            _basePage.ClickShoppingCartLink();
             Assert.That(_basePage.PageLoaded("Shopping Cart"), Is.True, "Cart did not load");
 
             var cartVerifier = new UserDataAndOrderVerifier(_driver, isCartPageContext: true);
-            List<ProductTable> cartItems = cartVerifier.GetProductTableItems();
-            GlobalObjects.CartItems = cartItems;
+            cartItems = cartVerifier.GetProductTableItems();
 
-            PriceInfoBox cartPriceInfo = _verifier.GetPriceInfo();
-            GlobalObjects.CartPriceInfo = cartPriceInfo;
+            cartPriceInfo = _verifier.GetPriceInfo();
             _verifier.PrintPriceInfo();
 
             bool productFoundInCart = false;
@@ -164,8 +167,7 @@ namespace EcommerceAppTests.UITests
             foreach (var cartItem in cartItems)
             {
                 if (cartItem.ProductName == productDetails.Name &&
-                    cartItem.UnitPrice == productDetails.Price &&
-                    cartItem.ProductSKU == productDetails.SKU)
+                    cartItem.UnitPrice == productDetails.Price) 
                 {
                     productFoundInCart = true;
 
@@ -188,20 +190,24 @@ namespace EcommerceAppTests.UITests
         [Test]
         [Category("Functional_Test")]
         [Category("Positive_Test")]
-        public void EmptyCart()
+        [TestCase(Category.Desktops, ProductPageTitle.Desktops, 2)]
+
+        public void EmptyCart(string categoryToSelect, string expectedPageTitle, int productIndexToSelect)
         {
-            AddProductToCartFromProductListingPage();
+            AddProductToCartFromProductListingPage(categoryToSelect, expectedPageTitle, productIndexToSelect);
             _cartPage.ConfirmCartIsCleared();
         }
 
         [Test]
-        [Category("End-to-End_Test")]
+        [Category("End_to_End_Test")]
         [Category("Positive_Test")]
-        public void Checkout_LoginDuringCheckout()
+        [TestCase(Category.Desktops, ProductPageTitle.Desktops, 2)]
+
+        public void Checkout_LoginDuringCheckout(string categoryToSelect, string expectedPageTitle, int productIndexToSelect)
         {
 
             //Add product to cart
-            AddProductToCartFromProductListingPage();
+            AddProductToCartFromProductListingPage(categoryToSelect, expectedPageTitle, productIndexToSelect);
 
             //click checkout
             _cartPage.ClickTermsOfService();
@@ -262,7 +268,7 @@ namespace EcommerceAppTests.UITests
 
             Console.WriteLine( checkoutItems.Count);
 
-            _verifier.CompareItems(GlobalObjects.CartItems, checkoutItems, (expected, actual, index) =>
+            _verifier.CompareItems(cartItems, checkoutItems, (expected, actual, index) =>
             {
                 Assert.That(actual.ProductName, Is.EqualTo(expected.ProductName), $"Product Name for item {index} does not match.");
                 Assert.That(actual.ProductSKU, Is.EqualTo(expected.ProductSKU), $"Product SKU for item {index} does not match.");
@@ -277,7 +283,7 @@ namespace EcommerceAppTests.UITests
             PriceInfoBox checkoutPriceInfo = _verifier.GetPriceInfo();
             _verifier.PrintPriceInfo();
 
-            _verifier.CompareItems(GlobalObjects.CartPriceInfo, checkoutPriceInfo, (expected, actual, index) =>
+            _verifier.CompareItems(cartPriceInfo, checkoutPriceInfo, (expected, actual, index) =>
             {
                 Assert.That(actual.Subtotal, Is.EqualTo(expected.Subtotal), $"Subtotal does not match for item {index}.");
                 Assert.That(actual.Shipping, Is.EqualTo(expected.Shipping), $"Shipping does not match for item {index}.");

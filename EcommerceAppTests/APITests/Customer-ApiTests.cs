@@ -53,11 +53,14 @@ namespace EcommerceAppTests.APITests
         {
             //enter json body with valid credentials and send post request to /token endpoint:
 
+            string adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
+
+
             var authRequestBody = new AuthenticationRequestBody
             {
                 guest = false,
                 username = "admin@vfcoder.com",
-                password = "adminvfcoder",
+                password = adminPassword,
                 remember_me = true 
             };
             _request = new RestRequest("/token", Method.Post);

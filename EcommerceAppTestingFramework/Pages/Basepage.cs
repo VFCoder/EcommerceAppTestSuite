@@ -28,6 +28,7 @@ namespace EcommerceAppTestingFramework.Pages
         private IWebElement MyAccountLink => _driver.FindElementWait(By.CssSelector(".ico-account"));
         private IWebElement WishlistLink => _driver.FindElementWait(By.CssSelector(".ico-wishlist"));
         private IWebElement CartLink => _driver.FindElementWait(By.CssSelector(".ico-cart"));
+        private IWebElement BaseLink(string page) => _driver.FindElementWait(By.CssSelector($".ico-{page}"));
         private IWebElement AdminLink => _driver.FindElementWait(By.CssSelector(".administration"));
         private IWebElement SearchBox => _driver.FindElementWait(By.Id("small-searchterms"));
         private IWebElement SearchBtn => _driver.FindElementWait(By.CssSelector(".search-box-button"));
@@ -60,6 +61,27 @@ namespace EcommerceAppTestingFramework.Pages
                    _driver.WaitForElementToBeVisible(LogoImage) &&
                    _driver.WaitForElementToBeVisible(SearchBox);
         }
+        
+        public bool PageLoadedPassing(string pageTitle)
+        {
+            try
+            {
+                _driver.WaitForPageLoad();
+                _driver.WaitForTitle(pageTitle,3);
+                _driver.WaitForElementToBeVisible(HeaderLinks);
+                _driver.WaitForElementToBeVisible(HeaderMenu);
+                _driver.WaitForElementToBeVisible(LogoImage);
+                _driver.WaitForElementToBeVisible(SearchBox);
+
+                return true; 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Page not loaded" + ex.Message);
+                return false;
+            }
+        }
+
 
         public bool AdminLoggedIn()
         {
@@ -84,6 +106,11 @@ namespace EcommerceAppTestingFramework.Pages
         public void ClickSearchButton()
         {
             SearchBtn.Click();
+        }
+
+        public void NavigateToPage(string page)
+        {
+            _driver.Click(BaseLink(page));
         }
 
         public void ClickLoginLink()
@@ -111,7 +138,7 @@ namespace EcommerceAppTestingFramework.Pages
             _driver.Click(MyAccountLink);
         }
 
-        public void ClickCartLink()
+        public void ClickShoppingCartLink()
         {
             _driver.Click(CartLink);
         }
