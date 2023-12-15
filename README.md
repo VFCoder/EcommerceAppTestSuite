@@ -1,6 +1,6 @@
 # Automated E-commerce App Testing Framework
 
-Welcome to the Automated E-commerce App Testing Framework repository. This project is intended to demonstrate my automation testing skills using .NET 7, C#, Page Object Model (POM), NUnit, and SpecFlow. The framework includes UI tests (smoke, functional, cross-browser, end-to-end), API tests, and database tests, all designed to test an open-source e-commerce application.
+Welcome to the Automated E-commerce App Testing Framework repository. This project is intended to demonstrate an automated testing framework and test suite using .NET 7, C#, Page Object Model (POM), and NUnit. The framework includes UI tests, API tests, and database tests, all designed to verify the functionality of an open-source e-commerce application which I have installed on my local machine and published to azure cloud. This framework also utilizes fake data generation and test reporting. Note: This is not a complete project but just a sample of some approaches that I have used in past projects with my software companies.
 
 ## Table of Contents
 - [Project Overview](#project-overview)
@@ -14,7 +14,7 @@ Welcome to the Automated E-commerce App Testing Framework repository. This proje
 
 ## Project Overview
 
-This project demonstrates my automation testing skills by testing an open-source e-commerce application. The application consists of the following components:
+This project tests an open-source e-commerce application. The application consists of the following components:
 
 - Customer-side UI
 - Admin panel
@@ -91,8 +91,6 @@ The test framework is structured according to the Page Object Model (POM) design
 
 ### Test Types
 NUnit: This framework uses NUnit for unit testing.
-
-SpecFlow: Some tests are implemented using SpecFlow for behavior-driven development (BDD).
 
 ### License
 This project is open source and available under the MIT License.
