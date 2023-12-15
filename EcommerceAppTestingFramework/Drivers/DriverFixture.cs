@@ -18,10 +18,10 @@ using EcommerceAppTestingFramework.Configuration;
 using OpenQA.Selenium.IE;
 using WebDriverManager.DriverConfigs.Impl;
 using WebDriverManager;
-//using EcommerceAppTestingFramework.Reports;
 
 namespace EcommerceAppTestingFramework.Drivers
 {
+    //driver implementing custom wait methods
     public class DriverFixture : IWebDriver, IDriverActions, ITakesScreenshot
     {
 

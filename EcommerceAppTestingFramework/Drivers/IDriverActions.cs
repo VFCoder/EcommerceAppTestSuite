@@ -20,7 +20,6 @@ namespace EcommerceAppTestingFramework.Drivers
         void SelectDropDownByText(IWebElement element, string text);
         void SelectDropDownByTextContains(IWebElement element, string partialText);
         void WaitForLoad(int? timeoutInSeconds = null);
-        //void HoverSelectWait(IWebElement hoverElement, IWebElement clickElement, int? timeoutInSeconds = null);
         void Dispose();
         Screenshot GetScreenshot();
         bool WaitForPageLoad(int? timeoutInSeconds = null);

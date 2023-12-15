@@ -11,7 +11,6 @@ namespace EcommerceAppTestingFramework.Helpers
 {
     public static class SqlExtensionMethods
     {
-
         public static void ExecuteNonQuery(this SqlConnection connection, string query)
         {
             if (connection == null)

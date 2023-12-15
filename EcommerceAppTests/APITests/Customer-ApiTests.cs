@@ -10,6 +10,7 @@ using EcommerceAppTestingFramework.Models.ApiModels;
 
 namespace EcommerceAppTests.APITests
 {
+    //API test folder structured by feature (ie Customer, Products, Orders, etc 
     [TestFixture]
     [Category("ApiTests")]
     [Parallelizable]
@@ -52,6 +53,7 @@ namespace EcommerceAppTests.APITests
         public void GetAPIAccessToken()
         {
             //enter json body with valid credentials and send post request to /token endpoint:
+            //password hidden as environment variable
 
             string adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
 

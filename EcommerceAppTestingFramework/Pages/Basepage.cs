@@ -82,7 +82,6 @@ namespace EcommerceAppTestingFramework.Pages
             }
         }
 
-
         public bool AdminLoggedIn()
         {
             return _driver.WaitForElementToBeVisible(AdminLink);
